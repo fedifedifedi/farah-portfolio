@@ -1,0 +1,1 @@
+﻿Dossier pour d'eventuels modeles 3D (.glb). Le personnage actuel est genere en code dans js/three/character.js.

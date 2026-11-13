@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Farah Ben Ammar — Designer graphique, Publicité</title>
+  <meta name="description" content="Portfolio de Farah Ben Ammar, étudiante en Design Image, spécialité Publicité graphique : campagnes, affiches, identités visuelles et édition.">
+  <meta name="theme-color" content="#2b1b3d">
+  <meta property="og:title" content="Farah Ben Ammar — Designer graphique, Publicité">
+  <meta property="og:description" content="Un voyage en 3D à travers mes projets de publicité graphique.">
+  <meta property="og:image" content="images/projets/chips-up-1.svg">
+  <link rel="icon" href="images/favicon.svg" type="image/svg+xml">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700&family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,700;0,9..144,900;1,9..144,400&display=swap">
+  <link rel="stylesheet" href="css/style.css">
+
+  <!-- Three.js, version figée, chargé depuis un CDN (pas de build) -->
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+        "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+      }
+    }
+  </script>
+  <script type="module" src="js/app.js"></script>
+</head>
+<body>
+  <a class="skip-link" href="#classic" data-go-classic>Aller directement au contenu (version classique)</a>
+
+  <button id="mode-toggle" class="mode-toggle" type="button">Version classique</button>
+
+  <!-- Accueil avec avatar interactif (avant le monde 3D, et en haut de la version classique) -->
+  <section id="intro" class="intro" aria-labelledby="intro-title">
+    <div class="intro__text">
+      <h1 id="intro-title" class="intro__title">Salut, je suis <span class="intro__name" id="intro-name">Farah</span></h1>
+      <p class="intro__sub" id="intro-sub">Designer graphique — Publicité</p>
+      <p class="intro__tagline" id="intro-tagline"></p>
+      <div class="intro__cta">
+        <button class="btn" type="button" id="intro-enter">Entrer dans mon univers</button>
+        <a class="btn btn--ghost" id="intro-cv" href="images/cv-farah.pdf" download>Télécharger le CV</a>
+      </div>
+      <p class="intro__status" id="intro-status" aria-live="polite"></p>
+    </div>
+
+    <div class="intro__avatar avatar" id="avatar">
+      <div class="avatar__stage">
+        <!-- Rempli par js/avatar.js : la photo, ou les 3 vidéos si elles existent dans images/ -->
+        <div class="avatar__frame" role="img" aria-label="Photo de Farah qui suit le curseur du regard"></div>
+        <!-- Farah en dessin animé (js/cartoon.js), qui sort du cadre -->
+        <div class="avatar__cartoon" aria-hidden="true">
+          <canvas></canvas>
+          <p class="avatar__bubble"></p>
+        </div>
+      </div>
+      <div class="avatar__controls" role="group" aria-label="Faire réagir l’avatar">
+        <button type="button" data-zone="left" aria-pressed="false">Left</button>
+        <button type="button" data-zone="center" aria-pressed="true">Center</button>
+        <button type="button" data-zone="right" aria-pressed="false">Right</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Écran de chargement -->
+  <div id="loader" class="loader" role="status" aria-live="polite" hidden>
+    <p class="loader__name">Farah Ben Ammar</p>
+    <p class="loader__sub">Préparation du voyage…</p>
+    <div class="loader__bar" aria-hidden="true"><span id="loader-fill"></span></div>
+    <p class="loader__pct" id="loader-pct">0 %</p>
+  </div>
+
+  <!-- Version 3D -->
+  <div id="experience" class="experience" hidden>
+    <canvas id="scene" aria-label="Voyage en 3D à travers le portfolio" role="img"></canvas>
+    <div class="progress-line" aria-hidden="true"><span id="progress-fill"></span></div>
+    <nav class="stages" id="stages" aria-label="Étapes du voyage"></nav>
+    <div class="overlays" id="overlays"></div>
+    <div class="scroll-track" id="scroll-track"></div>
+  </div>
+
+  <!-- Version classique (2D), générée depuis js/content.js et js/projects.js -->
+  <main id="classic" class="classic" tabindex="-1" hidden></main>
+
+  <!-- Fenêtre détaillée d'un projet -->
+  <dialog id="project-modal" class="modal" aria-labelledby="modal-title">
+    <div class="modal__inner">
+      <button class="modal__close" type="button" data-close aria-label="Fermer">×</button>
+      <div class="modal__media" id="modal-media"></div>
+      <div class="modal__text">
+        <p class="modal__cat" id="modal-cat"></p>
+        <h2 class="modal__title" id="modal-title"></h2>
+        <h3>Contexte</h3>
+        <p id="modal-context"></p>
+        <h3>Objectif</h3>
+        <p id="modal-goal"></p>
+        <h3>Outils</h3>
+        <ul class="tags" id="modal-tools"></ul>
+        <div class="modal__nav">
+          <button type="button" class="btn btn--ghost" data-prev>← Précédent</button>
+          <button type="button" class="btn btn--ghost" data-next>Suivant →</button>
+        </div>
+      </div>
+    </div>
+  </dialog>
+
+  <noscript>
+    <div class="noscript">
+      <h1>Farah Ben Ammar — Designer graphique, Publicité</h1>
+      <p>Ce portfolio nécessite JavaScript. Contact : <a href="mailto:farahbenammar26@gmail.com">farahbenammar26@gmail.com</a> · <a href="images/cv-farah.pdf">Télécharger le CV</a></p>
+    </div>
+  </noscript>
+</body>
+</html>

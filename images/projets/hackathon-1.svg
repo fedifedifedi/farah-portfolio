@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="1600" viewBox="0 0 1200 1600">
+  <defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#3d2a5c"/><stop offset="1" stop-color="#f4b3da"/></linearGradient></defs>
+  <rect width="1200" height="1600" fill="url(#g)"/>
+  <circle cx="864" cy="480" r="264" fill="#fff4ea" fill-opacity=".25"/>
+  <circle cx="300" cy="1152" r="384" fill="#2b1b3d" fill-opacity=".12"/>
+  <rect x="72" y="72" width="1056" height="1456" fill="none" stroke="#fff4ea" stroke-opacity=".6" stroke-width="4"/>
+  <text x="120" y="1240" font-family="Georgia, serif" font-size="120" font-weight="700" fill="#fff4ea">Hackathon</text>
+  <text x="120" y="1360" font-family="Arial, sans-serif" font-size="48" fill="#fff4ea" fill-opacity=".85">Design du projet</text>
+  <text x="120" y="192" font-family="Arial, sans-serif" font-size="36" letter-spacing="6" fill="#fff4ea" fill-opacity=".8">VISUEL À REMPLACER</text>
+</svg>

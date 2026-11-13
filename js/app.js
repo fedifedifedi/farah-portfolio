@@ -1,0 +1,145 @@
+// Point d'entrée : accueil avec avatar, puis version 3D ou version classique.
+// La 3D (et Three.js) n'est chargée que si on en a besoin : la version classique reste légère.
+import { content } from './content.js';
+import { renderClassic } from './classic.js';
+import { initAvatar } from './avatar.js';
+import { initFx } from './fx.js';
+
+const body = document.body;
+const $ = (id) => document.getElementById(id);
+const toggle = $('mode-toggle');
+const experienceEl = $('experience');
+const classicEl = $('classic');
+const loader = $('loader');
+const introStatus = $('intro-status');
+
+const params = new URLSearchParams(location.search);
+const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
+let webgl = (() => {
+  try {
+    const c = document.createElement('canvas');
+    return !!(c.getContext('webgl2') || c.getContext('webgl'));
+  } catch {
+    return false;
+  }
+})();
+
+// ---------- Accueil ----------
+$('intro-name').textContent = content.nom.split(' ')[0];
+$('intro-sub').textContent = content.titre;
+$('intro-tagline').textContent = content.accroche;
+$('intro-cv').href = content.cv;
+const avatar = initAvatar($('avatar'));
+initFx();
+
+let mode = null;
+let experience = null;
+let loading = null;
+let introOpen = false;
+const scrollMemory = { '3d': 0, classic: 0 };
+
+function setProgress(v) {
+  const pct = Math.round(Math.min(1, Math.max(0, v)) * 100);
+  $('loader-fill').style.width = pct + '%';
+  $('loader-pct').textContent = pct + ' %';
+  introStatus.textContent = pct < 100 ? `Préparation du voyage 3D… ${pct} %` : 'Le voyage est prêt.';
+}
+
+function load3D() {
+  if (loading) return loading;
+  setProgress(0.05);
+  loading = (async () => {
+    try {
+      const { createExperience } = await import('./three/experience.js');
+      setProgress(0.2);
+      experience = await createExperience({
+        onProgress: (v) => setProgress(0.2 + v * 0.8),
+        // ?p=0.5 dans l'adresse = démarrer à mi-parcours (pratique pour tester une étape)
+        startAt: params.has('p') ? Number(params.get('p')) : null,
+      });
+      setProgress(1);
+      if (mode !== '3d' || introOpen) experience.pause();
+      setTimeout(() => loader.classList.add('is-done'), 350);
+    } catch (err) {
+      console.error('La version 3D n’a pas pu démarrer :', err);
+      webgl = false;
+      loader.classList.add('is-done');
+      introStatus.textContent = '';
+      setMode('classic');
+    }
+  })();
+  return loading;
+}
+
+function showIntro() {
+  introOpen = true;
+  body.classList.add('intro-open');
+  body.classList.remove('intro-done');
+  avatar.setEnabled(true);
+  scrollTo(0, 0);
+}
+
+/** « Entrer dans mon univers » : on quitte l'accueil et on lance le parcours 3D */
+function enterUniverse() {
+  if (mode !== '3d') { setMode('3d', { skipIntro: true }); return; }
+  introOpen = false;
+  body.classList.remove('intro-open');
+  body.classList.add('intro-done');
+  avatar.setEnabled(false);
+  if (experience) experience.resume();
+  else { loader.hidden = false; loader.classList.remove('is-done'); }
+  experienceEl.querySelector('#stages button')?.focus({ preventScroll: true });
+}
+
+async function setMode(next, { skipIntro = false } = {}) {
+  if (next === mode) return;
+  if (mode) scrollMemory[mode] = scrollY;
+  mode = next;
+  const is3d = next === '3d';
+
+  body.classList.toggle('is-classic', !is3d);
+  experienceEl.hidden = !is3d;
+  classicEl.hidden = is3d;
+  toggle.textContent = is3d ? 'Version classique' : 'Version 3D';
+  toggle.hidden = !is3d && !webgl;
+  $('intro-enter').textContent = !is3d && !webgl ? 'Voir mes projets' : 'Entrer dans mon univers';
+
+  if (!is3d) {
+    renderClassic();
+    experience?.pause();
+    introOpen = false;
+    body.classList.remove('intro-open');
+    avatar.setEnabled(true); // l'accueil est en haut de la version classique
+    loader.classList.add('is-done');
+    history.replaceState(null, '', location.pathname + location.search + '#classique');
+    scrollTo(0, scrollMemory.classic);
+    return;
+  }
+
+  history.replaceState(null, '', location.pathname + location.search);
+  if (skipIntro) {
+    introOpen = true; // enterUniverse le referme
+    loader.hidden = false;
+    loader.classList.remove('is-done');
+    scrollTo(0, scrollMemory['3d']);
+    enterUniverse();
+  } else {
+    showIntro();
+  }
+  load3D();
+}
+
+toggle.addEventListener('click', () => setMode(mode === '3d' ? 'classic' : '3d', { skipIntro: true }));
+$('intro-enter').addEventListener('click', () => {
+  if (!webgl) { document.getElementById('c-projets')?.scrollIntoView({ behavior: 'smooth' }); return; }
+  enterUniverse();
+});
+document.querySelector('[data-go-classic]').addEventListener('click', (e) => {
+  e.preventDefault();
+  setMode('classic');
+  classicEl.focus();
+});
+
+const wantsClassic = location.hash === '#classique' || params.get('mode') === 'classique';
+if (!webgl || wantsClassic || reducedMotion) setMode('classic');
+else setMode('3d', { skipIntro: params.has('p') }); // ?p=… : on saute l'accueil (tests)
