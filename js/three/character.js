@@ -4,7 +4,7 @@
 // et fait coucou quand le visiteur arrête de défiler.
 import * as THREE from 'three';
 import { getDotTexture } from './utils.js';
-import { CARTOON_W, CARTOON_H, cartoonState, drawFarah, blendExpression } from '../cartoon.js';
+import { CARTOON_W, CARTOON_H, cartoonState, drawFarah, blendExpression, loadIllustration, drawPortrait } from '../cartoon.js';
 
 const HEIGHT = 2.1;       // taille du personnage (unités 3D)
 const REDRAW_FPS = 24;    // le dessin est mis à jour 24 fois par seconde (suffisant, et léger)
@@ -25,6 +25,9 @@ export function createCharacter() {
 
   const state = cartoonState();
   state.shadow = false; // l'ombre est un disque 3D posé au sol
+  // Illustration de Farah (images/farah-illustration-2.jpg) : remplace le dessin si elle existe
+  let portrait = null;
+  loadIllustration('voyage').then((p) => { portrait = p; });
 
   // Le regard suit la souris
   const mouse = { x: 0, y: 0, zone: 'center' };
@@ -97,7 +100,8 @@ export function createCharacter() {
         redraw = 0;
         ctx.setTransform(canvas.width / CARTOON_W, 0, 0, canvas.height / CARTOON_H, 0, 0);
         ctx.clearRect(0, 0, CARTOON_W, CARTOON_H);
-        drawFarah(ctx, state);
+        if (portrait) drawPortrait(ctx, portrait, state);
+        else drawFarah(ctx, state);
         texture.needsUpdate = true;
       }
 

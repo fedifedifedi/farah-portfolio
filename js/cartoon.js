@@ -281,6 +281,58 @@ export function drawFarah(ctx, s) {
   ctx.restore();
 }
 
+// Illustrations de Farah (portraits ronds) : elles remplacent le dessin ci-dessus quand le fichier existe.
+// cx / cy / r : cercle du portrait dans l'image (en fractions de la largeur de l'image)
+export const ILLUSTRATIONS = {
+  accueil: { src: 'images/farah-illustration-1.jpg', cx: 0.5, cy: 0.5, r: 0.49 },
+  voyage: { src: 'images/farah-illustration-2.jpg', cx: 0.5, cy: 0.5, r: 0.445 },
+};
+
+/** Charge une illustration ; renvoie une promesse de l'image (ou null si le fichier manque) */
+export function loadIllustration(key) {
+  return new Promise((resolve) => {
+    const img = new Image();
+    img.onload = () => resolve({ img, ...ILLUSTRATIONS[key] });
+    img.onerror = () => resolve(null);
+    img.src = ILLUSTRATIONS[key].src;
+  });
+}
+
+/** Dessine le portrait rond (repère CARTOON_W × CARTOON_H), avec flottement (s.bob) et inclinaison (s.tilt) */
+export function drawPortrait(ctx, p, s) {
+  const { img } = p;
+  const w = img.naturalWidth;
+  const sx = p.cx * w;
+  const sy = p.cy * img.naturalHeight;
+  const sr = p.r * w;
+  const R = 178;
+  const cx = 200;
+  const cy = 330 + s.bob;
+  ctx.save();
+  if (s.shadow) {
+    const k = 1 - Math.min(1, Math.abs(s.bob) / 40);
+    ctx.fillStyle = 'rgba(120, 40, 90, .18)';
+    ctx.beginPath();
+    ctx.ellipse(200, 520, 110 * (0.7 + 0.3 * k), 10, 0, 0, Math.PI * 2);
+    ctx.fill();
+  }
+  ctx.translate(cx, cy);
+  ctx.rotate(s.tilt);
+  // Anneau blanc et contour rose
+  ctx.fillStyle = '#fff';
+  ctx.beginPath();
+  ctx.arc(0, 0, R + 10, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.lineWidth = 6;
+  ctx.strokeStyle = CARTOON_COLORS.bow;
+  ctx.stroke();
+  ctx.beginPath();
+  ctx.arc(0, 0, R, 0, Math.PI * 2);
+  ctx.clip();
+  ctx.drawImage(img, sx - sr, sy - sr, sr * 2, sr * 2, -R, -R, R * 2, R * 2);
+  ctx.restore();
+}
+
 /** Interpole l'expression courante vers celle d'une zone */
 export function blendExpression(cur, zone, k) {
   const target = CARTOON_EXPRESSIONS[zone] || CARTOON_EXPRESSIONS.center;

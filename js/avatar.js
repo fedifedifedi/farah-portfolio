@@ -5,7 +5,7 @@
 //      on joue la vidéo de la zone (image d'attente : images/avatar.png).
 //   B) PHOTO : sinon, la photo images/avatar.jpg pivote doucement vers le curseur.
 // Dans les deux cas, Farah en version dessin animé (js/cartoon.js) sort du cadre et réagit aussi.
-import { CARTOON_W, CARTOON_H, cartoonState, drawFarah, blendExpression } from './cartoon.js';
+import { CARTOON_W, CARTOON_H, cartoonState, drawFarah, blendExpression, loadIllustration, drawPortrait } from './cartoon.js';
 
 // Ce que dit la bulle quand le curseur change de zone
 const BUBBLES = { left: 'Par ici ?', center: 'Coucou !', right: 'Et par là ?' };
@@ -70,6 +70,9 @@ function createCartoonAvatar(root, { reducedMotion = false } = {}) {
   let bubbleTimer = 0;
   let nextBlink = performance.now() + 1500;
   let blinkStart = -Infinity;
+  // Illustration de Farah (images/farah-illustration-1.jpg) : remplace le dessin si elle existe
+  let portrait = null;
+  loadIllustration('accueil').then((p) => { portrait = p; });
 
   return {
     frame(now, dt, zone, look) {
@@ -100,7 +103,8 @@ function createCartoonAvatar(root, { reducedMotion = false } = {}) {
 
       ctx.setTransform(canvas.width / CARTOON_W, 0, 0, canvas.height / CARTOON_H, 0, 0);
       ctx.clearRect(0, 0, CARTOON_W, CARTOON_H);
-      drawFarah(ctx, s);
+      if (portrait) drawPortrait(ctx, portrait, s);
+      else drawFarah(ctx, s);
     },
   };
 }
