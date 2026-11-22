@@ -2,6 +2,7 @@
 import { content } from './content.js';
 import { projects } from './projects.js';
 import { openProject } from './modal.js';
+import { initShowcase } from './showcase.js';
 
 const esc = (s = '') =>
   String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
@@ -51,19 +52,38 @@ export function renderClassic() {
     <div class="c-wrap">
       <div class="c-section__head reveal">
         <h2 id="c-projets-title">Projets</h2>
-        <p>Campagnes, identités visuelles et édition. Cliquez sur un projet pour le découvrir en détail.</p>
+        <p>Campagnes, affiches et identités visuelles. Faites glisser les affiches, puis ouvrez un projet pour le découvrir en détail.</p>
       </div>
-      <div class="c-grid">
+    </div>
+    <!-- Vitrine 3D des projets (js/showcase.js) -->
+    <div class="showcase reveal" id="showcase" role="region" aria-roledescription="carrousel" aria-label="Projets de Farah" tabindex="0">
+      <div class="showcase__stage">
         ${projects
           .map(
             (p, i) => `
-        <button class="c-card reveal" type="button" data-project="${i}">
-          <div class="c-card__img"><img src="${esc(p.image)}" alt="" loading="lazy" decoding="async"></div>
-          <p class="c-card__meta">${esc([p.categorie, p.annee].filter(Boolean).join(' · '))}</p>
-          <h3 class="c-card__title">${esc(p.titre)}</h3>
+        <button class="showcase__item" type="button" data-index="${i}" aria-label="${esc(p.titre)}">
+          <span class="showcase__poster"><img src="${esc(p.image)}" alt="" decoding="async" ${i > 2 ? 'loading="lazy"' : ''}></span>
+          <span class="showcase__reflect" aria-hidden="true"><img src="${esc(p.image)}" alt="" decoding="async" loading="lazy"></span>
         </button>`
           )
           .join('')}
+      </div>
+      <div class="c-wrap showcase__bottom">
+        <div class="showcase__info" aria-live="polite">
+          <p class="showcase__count"><span data-sc="num">01</span> <span>/ ${String(projects.length).padStart(2, '0')}</span></p>
+          <p class="showcase__cat" data-sc="cat"></p>
+          <h3 class="showcase__title" data-sc="title"></h3>
+          <p class="showcase__text" data-sc="text"></p>
+          <ul class="tags" data-sc="tools"></ul>
+          <button class="btn btn--arrow" type="button" data-sc="open">Voir le projet</button>
+        </div>
+        <div class="showcase__nav">
+          <button class="showcase__arrow" type="button" data-sc="prev" aria-label="Projet précédent">←</button>
+          <div class="showcase__thumbs" role="tablist" aria-label="Choisir un projet">
+            ${projects.map((p, i) => `<button type="button" role="tab" data-thumb="${i}" aria-label="${esc(p.titre)}"><img src="${esc(p.image)}" alt="" loading="lazy" decoding="async"></button>`).join('')}
+          </div>
+          <button class="showcase__arrow" type="button" data-sc="next" aria-label="Projet suivant">→</button>
+        </div>
       </div>
     </div>
   </section>
@@ -116,6 +136,7 @@ export function renderClassic() {
 
   <footer class="c-footer"><div class="c-wrap">© ${new Date().getFullYear()} ${esc(c.nom)} · ${esc(c.contact.ville)}</div></footer>`;
 
+  initShowcase(root.querySelector('#showcase'), projects, openProject);
   root.querySelectorAll('[data-project]').forEach((btn) =>
     btn.addEventListener('click', () => openProject(Number(btn.dataset.project)))
   );
