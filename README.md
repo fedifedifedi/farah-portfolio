@@ -11,8 +11,7 @@ Site statique (HTML/CSS/JS, Three.js 0.160.0 via CDN), prêt pour GitHub Pages.
 | CV | `images/cv-farah.pdf` |
 | Avatar en vidéo | `images/avatar-left.mp4`, `images/avatar-center.mp4`, `images/avatar-right.mp4`, `images/avatar.png` |
 | Photo de l'accueil (les yeux suivent la souris) | `images/avatar.jpg` — position des yeux : `EYES` dans `js/avatar.js` |
-| Farah en dessin animé (accueil + monde 3D) : couleurs, expressions | `CARTOON_COLORS` et `CARTOON_EXPRESSIONS` dans `js/cartoon.js` |
-| Phrases de la bulle de l'accueil | `BUBBLES` en haut de `js/avatar.js` |
+| Personnage 3D (couleurs de la tenue) | `C` en haut de `js/three/character.js` |
 | Effets (étoiles, traînée du curseur, cartes inclinables) | `js/fx.js` |
 
 ## Avatar de l'accueil

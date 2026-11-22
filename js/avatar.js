@@ -4,11 +4,6 @@
 //   A) VIDÉO : si images/avatar-left.mp4, avatar-center.mp4 et avatar-right.mp4 existent,
 //      on joue la vidéo de la zone (image d'attente : images/avatar.png).
 //   B) PHOTO : sinon, la photo images/avatar.jpg pivote doucement vers le curseur.
-// Dans les deux cas, Farah en version dessin animé (js/cartoon.js) sort du cadre et réagit aussi.
-import { CARTOON_W, CARTOON_H, cartoonState, drawFarah, blendExpression, loadIllustration, drawPortrait } from './cartoon.js';
-
-// Ce que dit la bulle quand le curseur change de zone
-const BUBBLES = { left: 'Par ici ?', center: 'Coucou !', right: 'Et par là ?' };
 
 const PHOTO = 'images/avatar.jpg';
 // Position des yeux sur la photo (en pixels de l'image, 765 × 1024) : les iris y suivent le curseur.
@@ -48,65 +43,6 @@ function step(s, tx, ty, dt) {
     s.x += s.vx * h;
     s.y += s.vy * h;
   }
-}
-
-/** Farah en dessin animé, dans un canvas qui déborde du cadre de la photo */
-function createCartoonAvatar(root, { reducedMotion = false } = {}) {
-  const canvas = root.querySelector('.avatar__cartoon canvas');
-  const bubble = root.querySelector('.avatar__bubble');
-  const ctx = canvas.getContext('2d');
-  const fit = () => {
-    const dpr = Math.min(2, devicePixelRatio || 1);
-    canvas.width = Math.round(canvas.clientWidth * dpr);
-    canvas.height = Math.round(canvas.clientHeight * dpr);
-  };
-  new ResizeObserver(fit).observe(canvas);
-
-  const s = cartoonState();
-  const gaze = spring(180, 14);
-  const tilt = spring(60, 8);
-  let lastZone = null;
-  let waveUntil = 0;
-  let bubbleTimer = 0;
-  let nextBlink = performance.now() + 1500;
-  let blinkStart = -Infinity;
-  // Illustration de Farah (images/farah-illustration-1.jpg) : remplace le dessin si elle existe
-  let portrait = null;
-  loadIllustration('accueil').then((p) => { portrait = p; });
-
-  return {
-    frame(now, dt, zone, look) {
-      if (!canvas.width) return;
-      if (zone !== lastZone) {
-        if (lastZone !== null) {
-          bubble.textContent = BUBBLES[zone];
-          bubble.classList.add('is-on');
-          clearTimeout(bubbleTimer);
-          bubbleTimer = setTimeout(() => bubble.classList.remove('is-on'), 1600);
-          if (zone === 'center') waveUntil = now + 1400;
-        }
-        lastZone = zone;
-      }
-      step(gaze, look.x, look.y, dt);
-      step(tilt, ({ left: -1, center: 0, right: 1 })[zone] * 0.1 + look.x * 0.05, 0, dt);
-      blendExpression(s.expr, zone, 1 - Math.exp(-dt * 8));
-
-      if (!reducedMotion && now >= nextBlink) { blinkStart = now; nextBlink = now + 2500 + Math.random() * 3500; }
-      const b = (now - blinkStart) / 160;
-      s.blink = b < 1 ? 1 - Math.abs(1 - 2 * b) : 0;
-      s.gx = Math.max(-1.1, Math.min(1.1, gaze.x));
-      s.gy = Math.max(-1.1, Math.min(1.1, gaze.y));
-      s.tilt = tilt.x;
-      s.t = now / 1000;
-      s.bob = reducedMotion ? 0 : Math.sin(now / 520) * 9 - 6; // elle vole comme une Super Nana
-      s.wave += ((now < waveUntil ? 1 : 0) - s.wave) * (1 - Math.exp(-dt * 10));
-
-      ctx.setTransform(canvas.width / CARTOON_W, 0, 0, canvas.height / CARTOON_H, 0, 0);
-      ctx.clearRect(0, 0, CARTOON_W, CARTOON_H);
-      if (portrait) drawPortrait(ctx, portrait, s);
-      else drawFarah(ctx, s);
-    },
-  };
 }
 
 /** Les 3 vidéos existent-elles ? Si oui, on les télécharge et on renvoie leurs adresses en mémoire. */
@@ -313,7 +249,6 @@ export function initAvatar(root) {
       setZone(z);
     }
     renderer?.frame(now, dt, zone, look);
-    cartoon.frame(now, dt, zone, look);
   }
 
   const update = () => {
@@ -326,7 +261,6 @@ export function initAvatar(root) {
   document.addEventListener('visibilitychange', update);
 
   // Choix du mode : la photo s'affiche tout de suite, les vidéos la remplacent si elles existent
-  const cartoon = createCartoonAvatar(root, { reducedMotion });
   renderer = createPhotoAvatar(stage, { reducedMotion });
   root.dataset.mode = renderer.mode;
   loadVideos().then((urls) => {

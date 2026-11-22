@@ -212,27 +212,7 @@ body.is-classic .intro__status { display: none; }
 /* Photo : elle se tourne doucement vers la zone du curseur (rotation pilotée par js/avatar.js) */
 .avatar__photo { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; will-change: transform; }
 
-/* Farah en dessin animé qui sort du cadre de la photo */
 .avatar__stage { position: relative; }
-.avatar__cartoon {
-  position: absolute; left: -36%; bottom: -8%; width: 60%; aspect-ratio: 400 / 533;
-  z-index: 3; pointer-events: none;
-  animation: cartoon-in 1s .5s both cubic-bezier(.34, 1.56, .64, 1);
-}
-.avatar__cartoon canvas { width: 100%; height: 100%; display: block; filter: drop-shadow(0 14px 18px rgba(108, 40, 90, .25)); }
-@keyframes cartoon-in { from { opacity: 0; transform: translate(-30%, 40%) rotate(-18deg) scale(.4); } }
-.avatar__bubble {
-  position: absolute; top: -2%; left: 72%; margin: 0; white-space: nowrap;
-  padding: 6px 14px 4px; border: 3px solid var(--ink); border-radius: 18px; background: #fff;
-  font: 700 clamp(18px, 2vw, 24px)/1.1 'Caveat', cursive; color: var(--ink);
-  transform: scale(0) rotate(-8deg); transform-origin: 0 100%;
-  transition: transform .35s cubic-bezier(.34, 1.56, .64, 1);
-}
-.avatar__bubble::after {
-  content: ''; position: absolute; left: 10px; bottom: -11px; width: 14px; height: 14px;
-  background: #fff; border: solid var(--ink); border-width: 0 3px 3px 0; transform: rotate(45deg);
-}
-.avatar__bubble.is-on { transform: scale(1) rotate(-4deg); }
 
 /* ---------- Animations d'entrée de l'accueil ---------- */
 .intro__text > * { animation: rise 1.1s both var(--ease-out); }
@@ -669,7 +649,6 @@ body.is-classic .intro__status { display: none; }
 @media (max-width: 640px) {
   .intro { padding-top: 84px; gap: var(--space-6); }
   .intro__cta .btn { flex: 1 1 auto; }
-  .avatar__cartoon { left: -22%; width: 52%; }
   .c-header .c-wrap { height: 64px; }
   .c-card:nth-child(n) { margin-top: 0; }
   .btn { min-height: 48px; padding: 0 22px; }
