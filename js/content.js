@@ -37,6 +37,7 @@ export const content = {
     'Affiche publicitaire',
     'Édition & mise en page',
     'Montage vidéo',
+    'Audiovisuel',
   ],
   logiciels: ['Photoshop', 'Illustrator', 'InDesign', 'Avid Media Composer'],
   atouts: ['Travail en équipe', 'Délais courts', 'Hackathons'],
