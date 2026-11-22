@@ -11,13 +11,13 @@ const FACE_URL = 'images/farah-visage.jpg';
 
 // Couleurs : change-les ici (tenue rose)
 const C = {
-  skin: '#f8d7bd', hair: '#6e4b33', hairLight: '#8a6244', jacket: '#f8c8dc', jacketDark: '#f2a9cb', // tenue toute rose : veste rose bébé
+  skin: '#f8d7bd', hair: '#7a5640', hairLight: '#9c7354', jacket: '#f8c8dc', jacketDark: '#f2a9cb', // tenue toute rose : veste rose bébé
   top: '#fff4fa', jeans: '#ee9fc6', shoes: '#ffffff', sole: '#f6d3e4', // pantalon rose, baskets blanches
 };
 
 const mat = (color, roughness = 0.75) => new THREE.MeshStandardMaterial({ color, roughness, metalness: 0 });
 const M = {
-  skin: mat(C.skin, 0.6), hair: mat(C.hair, 0.55), hairLight: mat(C.hairLight, 0.55),
+  skin: new THREE.MeshBasicMaterial({ color: C.skin }), hair: mat(C.hair, 0.55), hairLight: mat(C.hairLight, 0.55),
   jacket: mat(C.jacket, 0.85), jacketDark: mat(C.jacketDark, 0.85), top: mat(C.top),
   jeans: mat(C.jeans, 0.85), shoes: mat(C.shoes, 0.5), sole: mat(C.sole),
 };
@@ -51,13 +51,14 @@ function faceTexture(img) {
   g.fillStyle = C.skin;
   g.fillRect(0, 0, c.width, c.height);
   g.drawImage(img, 0, 0);
+  // Ovale du visage seulement (sans les cheveux de l'image) : les cheveux 3D l'encadrent
   g.globalCompositeOperation = 'destination-in';
-  g.translate(c.width / 2, c.height / 2);
-  g.scale(1, c.height / c.width);
-  const r = c.width / 2;
+  g.translate(c.width * 0.5, c.height * 0.55);
+  g.scale(1, (c.height * 0.46) / (c.width * 0.42));
+  const r = c.width * 0.42;
   const mask = g.createRadialGradient(0, 0, 0, 0, 0, r);
   mask.addColorStop(0, 'rgba(0,0,0,1)');
-  mask.addColorStop(0.82, 'rgba(0,0,0,1)');
+  mask.addColorStop(0.86, 'rgba(0,0,0,1)');
   mask.addColorStop(1, 'rgba(0,0,0,0)');
   g.fillStyle = mask;
   g.fillRect(-r, -r, r * 2, r * 2);
@@ -116,19 +117,12 @@ export function createCharacter() {
   const torso = new THREE.Mesh(new THREE.LatheGeometry(torsoProfile, 24), M.jacket);
   torso.scale.set(1.18, 1, 0.78);
   spine.add(torso);
-  // Haut blanc visible dans l'ouverture en V de la veste
+  // Haut blanc visible dans l'ouverture en V de la veste (comme sur son avatar)
   const vShape = new THREE.Shape();
-  vShape.moveTo(-0.062, 0.53).lineTo(0.062, 0.53).lineTo(0, 0.33).lineTo(-0.062, 0.53);
-  const top = new THREE.Mesh(new THREE.ShapeGeometry(vShape), new THREE.MeshStandardMaterial({ color: C.top, roughness: 0.8, side: THREE.DoubleSide }));
+  vShape.moveTo(-0.07, 0.53).lineTo(0.07, 0.53).lineTo(0, 0.36).lineTo(-0.07, 0.53);
+  const top = new THREE.Mesh(new THREE.ShapeGeometry(vShape), new THREE.MeshBasicMaterial({ color: C.top, side: THREE.DoubleSide }));
   top.position.z = 0.128;
   spine.add(top);
-  // Revers de la veste
-  for (const side of [1, -1]) {
-    const lapel = new THREE.Mesh(new THREE.BoxGeometry(0.05, 0.2, 0.015), M.jacketDark);
-    lapel.position.set(side * 0.06, 0.41, 0.115);
-    lapel.rotation.set(-0.15, side * 0.3, side * -0.25);
-    spine.add(lapel);
-  }
 
   // ---------- Bras ----------
   const arms = [1, -1].map((side) => {
@@ -177,39 +171,49 @@ export function createCharacter() {
   };
   faceImg.src = FACE_URL;
 
-  // Cheveux longs et lisses, raie au milieu
+  // Cheveux longs et lisses, raie au milieu, qui encadrent le visage (comme sur son avatar)
   const hairGroup = new THREE.Group();
   hairGroup.position.y = 0.11;
   head.add(hairGroup);
-  const crown = new THREE.Mesh(new THREE.SphereGeometry(HEAD_R * 1.08, 28, 16, 0, Math.PI * 2, 0, 0.95), M.hair);
-  crown.scale.set(0.94, 1.15, 1.04);
+  // Dessus de la tête : couvre le front jusqu'à la naissance des cheveux
+  const crown = new THREE.Mesh(new THREE.SphereGeometry(HEAD_R * 1.07, 32, 18, 0, Math.PI * 2, 0, 1.05), M.hair);
+  crown.scale.set(0.95, 1.16, 1.05);
+  crown.rotation.x = -0.12;
   hairGroup.add(crown);
+  // Raie au milieu : léger sillon plus clair
+  const part = new THREE.Mesh(new THREE.BoxGeometry(0.006, 0.004, 0.11), M.hairLight);
+  part.position.set(0, HEAD_R * 1.22, 0.04);
+  part.rotation.x = 0.5;
+  hairGroup.add(part);
   const back = new THREE.Mesh(new THREE.SphereGeometry(HEAD_R * 1.1, 28, 18, Math.PI, Math.PI), M.hair);
-  back.scale.set(0.96, 1.18, 1.05);
+  back.scale.set(0.98, 1.18, 1.06);
   hairGroup.add(back);
   // Longueur dans le dos (balance en marchant)
   const hairFall = new THREE.Group();
   hairFall.position.set(0, -0.02, -0.06);
   hairGroup.add(hairFall);
-  const fallGeo = new THREE.CapsuleGeometry(0.1, 0.42, 6, 14);
-  const fall = new THREE.Mesh(fallGeo, M.hair);
-  fall.scale.set(1.25, 1, 0.42);
-  fall.position.y = -0.24;
+  const fall = new THREE.Mesh(new THREE.CapsuleGeometry(0.11, 0.48, 6, 16), M.hair);
+  fall.scale.set(1.2, 1, 0.42);
+  fall.position.y = -0.27;
   hairFall.add(fall);
-  for (const x of [-0.06, 0.02, 0.08]) {
-    const streak = new THREE.Mesh(new THREE.CapsuleGeometry(0.012, 0.36, 3, 6), M.hairLight);
-    streak.position.set(x, -0.26, -0.045);
+  for (const x of [-0.07, 0.0, 0.07]) {
+    const streak = new THREE.Mesh(new THREE.CapsuleGeometry(0.012, 0.4, 3, 6), M.hairLight);
+    streak.position.set(x, -0.29, -0.045);
     hairFall.add(streak);
   }
-  // Mèches qui encadrent le visage et tombent devant les épaules
+  // Deux grands rideaux de cheveux de chaque côté du visage, qui tombent sur les épaules
   const locks = [1, -1].map((side) => {
     const lock = new THREE.Group();
-    lock.position.set(side * 0.098, 0.04, 0.015);
-    const m = new THREE.Mesh(new THREE.CapsuleGeometry(0.03, 0.4, 4, 8), M.hair);
-    m.scale.set(1, 1, 0.75);
-    m.position.y = -0.22;
+    lock.position.set(side * 0.092, 0.06, 0.01);
+    const m = new THREE.Mesh(new THREE.CapsuleGeometry(0.045, 0.46, 6, 12), M.hair);
+    m.scale.set(1, 1, 0.8);
+    m.position.y = -0.25;
     lock.add(m);
-    lock.rotation.z = side * 0.06;
+    // Reflet caramel sur la mèche
+    const hl = new THREE.Mesh(new THREE.CapsuleGeometry(0.01, 0.34, 3, 6), M.hairLight);
+    hl.position.set(side * 0.012, -0.27, 0.03);
+    lock.add(hl);
+    lock.rotation.z = side * 0.09;
     hairGroup.add(lock);
     return lock;
   });

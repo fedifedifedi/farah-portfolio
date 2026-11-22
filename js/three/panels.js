@@ -293,7 +293,7 @@ export function createPanels(path, world, { manager } = {}) {
       neon[1].scale.set(W + 0.3, t, 1); neon[1].position.set(0, -H / 2 - 0.13, 0.01);
       neon[2].scale.set(t, H + 0.3, 1); neon[2].position.set(-W / 2 - 0.13, 0, 0.01);
       neon[3].scale.set(t, H + 0.3, 1); neon[3].position.set(W / 2 + 0.13, 0, 0.01);
-      base.position.y = -H / 2 - 1.25;
+      base.position.y = -H / 2 - 1.9; // sous l'étiquette, sans la couper
       base.scale.setScalar(Math.max(0.85, W / 3.4));
       label.position.y = -H / 2 - 0.72;
     };
