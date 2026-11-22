@@ -111,12 +111,12 @@ async function setMode(next, { skipIntro = false } = {}) {
     body.classList.remove('intro-open');
     avatar.setEnabled(true); // l'accueil est en haut de la version classique
     loader.classList.add('is-done');
-    history.replaceState(null, '', location.pathname + location.search + '#classique');
+    history.replaceState(null, '', location.pathname + location.search); // version par défaut : adresse sans suffixe
     scrollTo(0, scrollMemory.classic);
     return;
   }
 
-  history.replaceState(null, '', location.pathname + location.search);
+  history.replaceState(null, '', location.pathname + location.search + '#3d'); // un rechargement reste en 3D
   if (skipIntro) {
     introOpen = true; // enterUniverse le referme
     loader.hidden = false;
@@ -140,6 +140,8 @@ document.querySelector('[data-go-classic]').addEventListener('click', (e) => {
   classicEl.focus();
 });
 
-const wantsClassic = location.hash === '#classique' || params.get('mode') === 'classique';
-if (!webgl || wantsClassic || reducedMotion) setMode('classic');
-else setMode('3d', { skipIntro: params.has('p') }); // ?p=… : on saute l'accueil (tests)
+// Le portfolio s'ouvre sur la version classique.
+// La 3D s'ouvre avec le bouton « Version 3D », ou directement avec l'adresse …/#3d (ou ?p=0.5 pour tester une étape).
+const wants3d = location.hash === '#3d' || params.get('mode') === '3d' || params.has('p');
+if (webgl && wants3d) setMode('3d', { skipIntro: true });
+else setMode('classic');
