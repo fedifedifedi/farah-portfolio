@@ -212,9 +212,11 @@ export function createPanels(path, world, { manager } = {}) {
   const loader = new THREE.TextureLoader(manager);
   const frameMat = flatMat({ color: '#f4b3da', emissive: '#a8467e', emissiveIntensity: 0.25 });
   projects.forEach((proj, i) => {
-    const s = projects.length === 1 ? sProj0 : sProj0 + ((sProj1 - sProj0) * i) / (projects.length - 1);
+    // Un projet tous les 24 m environ (resserré si la liste est longue)
+    const gap = projects.length > 1 ? Math.min(24, (sProj1 - sProj0) / (projects.length - 1)) : 0;
+    const s = sProj0 + gap * i;
     const side = i % 2 ? -1 : 1;
-    const H = 3.6;
+    const H = 4.6; // grandes affiches : ce sont les vraies stars du portfolio
     const frame = new THREE.Group();
     const back = new THREE.Mesh(new THREE.BoxGeometry(1, 1, 0.16), frameMat);
     back.position.z = -0.1;
@@ -254,13 +256,13 @@ export function createPanels(path, world, { manager } = {}) {
     );
 
     path.pointAt(s, frame.position);
-    frame.position.addScaledVector(path.sideAt(s), side * 4.6);
-    frame.position.y += 2.6;
-    faceBack(frame, path, s, 10, 2.6);
+    frame.position.addScaledVector(path.sideAt(s), side * 5.2);
+    frame.position.y += 2.8;
+    faceBack(frame, path, s, 8, 2.6); // tourné vers l'endroit où la caméra marque une pause
     skyGroup.add(frame);
 
     [back, img, label].forEach((m) => (m.userData.projectIndex = i));
-    frames.push({ frame, index: i, hover: 0 });
+    frames.push({ frame, index: i, hover: 0, s });
     animated.push({ kind: 'float', obj: frame, baseY: frame.position.y, phase: i * 1.7 });
   });
 
@@ -289,6 +291,7 @@ export function createPanels(path, world, { manager } = {}) {
     group,
     clickables,
     sProjects: [sProj0, sProj1],
+    frameS: frames.map((f) => f.s), // position de chaque projet sur le chemin
     update(t, dt, camS, hoveredIndex, camera) {
       skyGroup.visible = camera.position.y > 6;
       for (const a of animated) {

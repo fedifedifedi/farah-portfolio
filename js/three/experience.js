@@ -81,6 +81,33 @@ export async function createExperience({ onProgress = () => {}, startAt = null }
   const readScroll = () => { target = Math.min(1, Math.max(0, scrollY / maxScroll())); };
   addEventListener('scroll', readScroll, { passive: true });
 
+  // Le scroll ralentit devant chaque projet : la caméra marque une pause pour qu'on ait le temps de le regarder.
+  // On construit une table « progression du scroll → distance sur le chemin ».
+  const DWELL = 6;         // force de la pause (0 = aucune)
+  const DWELL_WIDTH = 3.5; // longueur de chemin concernée par la pause
+  const N = 1000;
+  const ds = travel / N;
+  const weight = (s) => 1 + panels.frameS.reduce((a, fs) => a + DWELL * Math.exp(-(((s - (fs - 8)) / DWELL_WIDTH) ** 2)), 0);
+  const cum = new Float32Array(N + 1);
+  for (let i = 1; i <= N; i++) cum[i] = cum[i - 1] + weight((i - 0.5) * ds) * ds;
+  const total = cum[N];
+  /** progression (0–1) → distance de la caméra sur le chemin */
+  const camSAt = (u) => {
+    const target = Math.min(1, Math.max(0, u)) * total;
+    let lo = 0;
+    let hi = N;
+    while (hi - lo > 1) { const mid = (lo + hi) >> 1; if (cum[mid] < target) lo = mid; else hi = mid; }
+    return (lo + (target - cum[lo]) / Math.max(1e-9, cum[hi] - cum[lo])) * ds;
+  };
+  /** distance sur le chemin → progression (0–1) */
+  const progressAt = (s) => {
+    const x = Math.min(N, Math.max(0, s / ds));
+    const i = Math.min(N - 1, Math.floor(x));
+    return (cum[i] + (cum[i + 1] - cum[i]) * (x - i)) / total;
+  };
+  // La page s'allonge d'autant : la vitesse de défilement reste la même ailleurs
+  document.getElementById('scroll-track').style.height = Math.round(1400 * (total / travel)) + 'vh';
+
   // ---------- Étapes : textes HTML + menu ----------
   const sAbout = path.nearestS(STAGE_MARKERS.apropos);
   const sSkills = path.nearestS(STAGE_MARKERS.competences);
@@ -98,7 +125,7 @@ export async function createExperience({ onProgress = () => {}, startAt = null }
     {
       jumpTo: (camS) => {
         const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
-        scrollTo({ top: (Math.max(0, camS) / travel) * maxScroll(), behavior: reduce ? 'auto' : 'smooth' });
+        scrollTo({ top: progressAt(Math.max(0, camS)) * maxScroll(), behavior: reduce ? 'auto' : 'smooth' });
       },
     }
   );
@@ -159,7 +186,7 @@ export async function createExperience({ onProgress = () => {}, startAt = null }
     progress += (target - progress) * Math.min(1, dt * 4);
     if (Math.abs(target - progress) < 1e-5) progress = target;
 
-    const camS = progress * travel;
+    const camS = camSAt(progress);
     placeCamera(camS);
 
     // Ambiance : on passe du coucher de soleil au monde doré en prenant de l'altitude
