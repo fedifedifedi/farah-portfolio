@@ -71,7 +71,12 @@ export function initShowcase(root, projects, openProject) {
     $('tools').replaceChildren(...(p.outils || []).map((o) => Object.assign(document.createElement('li'), { textContent: o })));
     info.classList.add('is-in');
     thumbs.forEach((t, k) => { t.setAttribute('aria-selected', String(k === i)); t.classList.toggle('is-active', k === i); });
-    thumbs[i]?.scrollIntoView({ block: 'nearest', inline: 'center', behavior: reduce ? 'auto' : 'smooth' });
+    // On fait défiler uniquement la rangée de vignettes (scrollIntoView ferait aussi défiler la page)
+    const strip = thumbs[i]?.parentElement;
+    if (strip && strip.scrollWidth > strip.clientWidth) {
+      const left = thumbs[i].offsetLeft - strip.offsetLeft - (strip.clientWidth - thumbs[i].clientWidth) / 2;
+      strip.scrollTo({ left, behavior: reduce ? 'auto' : 'smooth' });
+    }
     $('prev').disabled = i === 0;
     $('next').disabled = i === n - 1;
   }
