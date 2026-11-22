@@ -20,7 +20,7 @@ const tous = [
     categorie: 'Campagne publicitaire',
     annee: '',
     image: 'images/projets/reaktor-moodboard.jpg',
-    galerie: ['images/projets/reaktor-packshot.jpg', 'images/projets/reaktor-shooting.jpg', 'images/projets/reaktor-carte-mentale.jpg'],
+    galerie: ['images/projets/reaktor-photo.jpg', 'images/projets/reaktor-packshot.jpg', 'images/projets/reaktor-shooting.jpg', 'images/projets/reaktor-carte-mentale.jpg'],
     contexte: 'Concept de campagne pour une boisson énergisante, REAKTOR, déclinée en deux produits : Dark Power et Focus Power.',
     objectif: 'Traduire l’idée de dualité « Force × Énergie » : deux facettes d’une même personnalité, mises en scène par le contraste rouge / bleu, du moodboard et de la carte mentale jusqu’au shooting photo.',
     outils: ['Photoshop', 'Direction artistique', 'Photographie'],
@@ -83,7 +83,7 @@ const tous = [
     masque: true, // visuel provisoire : à remplacer
     image: 'images/projets/rose-blanche-1.svg',
     galerie: ['images/projets/rose-blanche-2.svg'],
-    contexte: 'Hackathon La Rose Blanche, travail en équipe sur un temps très court.',
+    contexte: 'Hackathon organisé le 11 février 2026 par Flexo Print (Rose Blanche Group) avec l’ESSTED : refonte du logo et de la charte graphique de Flexo Print, en équipe (groupe 3).',
     objectif: 'Définir l’identité visuelle du projet : couleurs, typographies et règles d’utilisation.',
     outils: ['Illustrator', 'InDesign'],
   },
