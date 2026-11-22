@@ -2,16 +2,16 @@
 // Silhouette générée en code (articulations : hanches, genoux, chevilles, épaules, coudes),
 // démarche féminine : balancement des hanches, pas légèrement croisés, bras souples, épaules en contrepoids.
 // Elle marche dans la médina, s'envole dans les nuages avec une traînée rose,
-// et se retourne pour faire coucou quand le visiteur arrête de défiler.
+// toujours tournée vers le visiteur, et fait coucou quand il arrête de défiler.
 // Le modèle regarde vers +Z ; il est orienté le long du chemin à chaque image.
 import * as THREE from 'three';
 import { getDotTexture } from './utils.js';
 
 const FACE_URL = 'images/farah-visage.jpg';
 
-// Couleurs : change-les ici (tenue inspirée de son avatar : veste en jean, haut blanc)
+// Couleurs : change-les ici (veste rose bébé, haut blanc, jean)
 const C = {
-  skin: '#f8d7bd', hair: '#6e4b33', hairLight: '#8a6244', jacket: '#5d86b6', jacketDark: '#4a6f9c',
+  skin: '#f8d7bd', hair: '#6e4b33', hairLight: '#8a6244', jacket: '#f8c8dc', jacketDark: '#eeaecb', // veste rose bébé
   top: '#fbf7f2', jeans: '#2f3550', shoes: '#ffffff', sole: '#e9dfe4',
 };
 
@@ -260,14 +260,16 @@ export function createCharacter() {
       root.lookAt(ahead.copy(root.position).add(tangent));
 
       const airborne = THREE.MathUtils.smoothstep(root.position.y, 0.5, 3);
+      // Elle reste toujours tournée vers le visiteur (comme une guide qui fait visiter) :
+      // on voit son visage pendant tout le voyage, et elle avance à reculons.
+      turn.rotation.y = Math.PI;
       idle = speed < 0.4 ? idle + dt : 0;
-      face = damp(face, THREE.MathUtils.smoothstep(idle, 1.2, 2.2) * (1 - airborne), 4, dt);
-      turn.rotation.y = face * Math.PI;
+      face = damp(face, THREE.MathUtils.smoothstep(idle, 1.2, 2.2) * (1 - airborne), 4, dt); // coucou à l'arrêt
 
       // Intensité de la marche (0 = immobile), lissée pour démarrer et s'arrêter en douceur
-      walk = damp(walk, Math.min(1, speed / 1.2) * (1 - airborne) * (1 - face), 6, dt);
-      // Cadence : environ 1,4 m par cycle de deux pas, plafonnée pour rester naturelle
-      phase += Math.min(speed, 4.2) / 1.4 * Math.PI * 2 * dt;
+      walk = damp(walk, Math.min(1, speed / 1.2) * (1 - airborne), 6, dt);
+      // Cadence : environ 1,4 m par cycle de deux pas ; cycle inversé car elle marche à reculons
+      phase -= Math.min(speed, 4.2) / 1.4 * Math.PI * 2 * dt;
       const sp = Math.sin(phase);
       const cp = Math.cos(phase);
       const fly = airborne;
@@ -303,11 +305,12 @@ export function createCharacter() {
         let ax = s1 * 0.38 * walk;                       // avant / arrière
         let az = arm.side * 0.12;                        // bras légèrement écartés du corps
         let el = 0.22 + Math.max(0, -s1) * 0.35 * walk;  // coude plus plié quand le bras passe devant
-        if (arm.side === 1) {
-          ax = THREE.MathUtils.lerp(ax, -2.9, fly);      // en vol : bras tendu vers l'avant
-          el = THREE.MathUtils.lerp(el, 0.05, fly);
-        } else {
-          ax = THREE.MathUtils.lerp(ax, 0.4, fly);
+        // En vol : elle flotte face au visiteur, bras ouverts, mouvement lent comme dans l'eau
+        const flap = Math.sin(t * 1.6 + arm.side) * 0.15;
+        ax = THREE.MathUtils.lerp(ax, -0.15 + flap * 0.5, fly);
+        az = THREE.MathUtils.lerp(az, arm.side * (0.9 + flap), fly);
+        el = THREE.MathUtils.lerp(el, 0.35, fly);
+        if (arm.side === -1) {
           // Coucou : bras levé, l'avant-bras s'agite
           az = THREE.MathUtils.lerp(az, -2.5, wave);
           ax = THREE.MathUtils.lerp(ax, -0.2, wave);
@@ -317,20 +320,20 @@ export function createCharacter() {
         arm.elbow.rotation.x = -el;
       }
 
-      // --- Vol : corps à l'horizontale, comme une super-héroïne ---
-      hips.rotation.x = fly * 1.3;
-      hips.position.z = fly * 0.3;
+      // --- Vol : légèrement penchée vers le visiteur, elle ondule doucement ---
+      hips.rotation.x = fly * (0.18 + Math.sin(t * 1.2) * 0.05);
+      hips.position.z = 0;
 
-      // --- Tête : stable pendant la marche, regarde devant en vol, suit la souris face au visiteur ---
-      head.rotation.y = -(spine.rotation.y + pelvis.rotation.y) + face * mouse.x * 0.45;
-      head.rotation.x = -fly * 1.1 + face * mouse.y * 0.2 + Math.sin(phase * 2) * 0.015 * walk;
+      // --- Tête : stable pendant la marche, suit la souris (elle regarde le visiteur) ---
+      head.rotation.y = -(spine.rotation.y + pelvis.rotation.y) + mouse.x * 0.4;
+      head.rotation.x = mouse.y * 0.18 - fly * 0.1 + Math.sin(phase * 2) * 0.015 * walk;
       head.rotation.z = -spine.rotation.z;
 
-      // Cheveux : suivent le mouvement avec un léger retard
+      // Cheveux : suivent le mouvement avec un léger retard, et flottent en vol
       hairLag = damp(hairLag, sp * walk, 5, dt);
-      hairFall.rotation.x = 0.08 + Math.abs(hairLag) * 0.05 + fly * 0.9 + walk * 0.06;
-      hairFall.rotation.z = -hairLag * 0.08;
-      for (const lock of locks) lock.rotation.x = -0.05 + fly * 0.6;
+      hairFall.rotation.x = 0.08 + Math.abs(hairLag) * 0.05 + walk * 0.06 + fly * (0.25 + Math.sin(t * 1.4) * 0.08);
+      hairFall.rotation.z = -hairLag * 0.08 + fly * Math.sin(t * 1.1) * 0.06;
+      for (const lock of locks) lock.rotation.x = -0.05 - fly * 0.1;
 
       // Légère inclinaison dans les virages
       const h1 = Math.atan2(tangent.x, tangent.z);
@@ -345,8 +348,9 @@ export function createCharacter() {
       shadow.visible = root.position.y < 1.5;
 
       // Traînée : un peu derrière elle, à hauteur du corps
-      tail.copy(root.position).addScaledVector(tangent, -0.5);
-      tail.y += 0.9 + fly * 0.2;
+      // (elle fait face au visiteur : la traînée part de ses pieds, côté opposé à la caméra)
+      tail.copy(root.position).addScaledVector(tangent, 0.35);
+      tail.y += 0.25 + fly * 0.2;
       if (!trailInit) { for (let i = 0; i < TRAIL; i++) trailPos.set([tail.x, tail.y, tail.z], i * 3); trailInit = true; }
       trailPos.copyWithin(3, 0, (TRAIL - 1) * 3);
       trailPos[0] = tail.x + (Math.random() - 0.5) * 0.3;
