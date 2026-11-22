@@ -99,7 +99,7 @@ export function renderClassic() {
         <h2 id="c-cv-title">Mon <em>CV</em></h2>
         <p>Formation, expérience et compétences, en une page.</p>
       </div>
-      <a class="btn btn--light" href="${esc(c.cv)}" download>Télécharger le CV (PDF)</a>
+      <a class="btn btn--light btn--download" href="${esc(c.cv)}" download>Télécharger le CV (PDF)</a>
     </div>
   </section>
 
@@ -121,9 +121,16 @@ export function renderClassic() {
   );
 
   // Animations légères à l'apparition
+  // Les éléments qui entrent à l'écran en même temps apparaissent l'un après l'autre (90 ms d'écart)
   const io = new IntersectionObserver(
-    (entries) => entries.forEach((e) => { if (e.isIntersecting) { e.target.classList.add('is-in'); io.unobserve(e.target); } }),
-    { rootMargin: '0px 0px -8% 0px' }
+    (entries) => entries
+      .filter((e) => e.isIntersecting)
+      .forEach((e, i) => {
+        e.target.style.setProperty('--reveal-delay', `${Math.min(i, 6) * 90}ms`);
+        e.target.classList.add('is-in');
+        io.unobserve(e.target);
+      }),
+    { rootMargin: '0px 0px -10% 0px' }
   );
   root.querySelectorAll('.reveal').forEach((el) => io.observe(el));
 }

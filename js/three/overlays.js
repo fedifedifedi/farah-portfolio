@@ -43,7 +43,7 @@ const HTML = {
       <p>${esc(content.contact.message)}</p>
       <div class="contact-links">
         <a class="btn" href="mailto:${esc(content.contact.email)}">${esc(content.contact.email)}</a>
-        <a class="btn btn--ghost" href="${esc(content.cv)}" download>Télécharger le CV</a>
+        <a class="btn btn--ghost btn--download" href="${esc(content.cv)}" download>Télécharger le CV</a>
         ${socialLinks()}
       </div>
     </section>`,

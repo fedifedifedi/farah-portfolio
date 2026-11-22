@@ -37,8 +37,9 @@ export async function createExperience({ onProgress = () => {}, startAt = null }
   const camera = new THREE.PerspectiveCamera(isMobile ? 68 : 58, innerWidth / innerHeight, 0.1, 900);
 
   // ---------- Lumières chaudes ----------
-  const hemi = new THREE.HemisphereLight('#ffe0ee', '#9a6aa6', 1.9);
-  const sunLight = new THREE.DirectionalLight('#ffb3d6', 2.4);
+  // Lumière douce : ciel plus présent, soleil moins dur → facettes moins contrastées, ombres plus tendres
+  const hemi = new THREE.HemisphereLight('#ffe0ee', '#9a6aa6', 2.3);
+  const sunLight = new THREE.DirectionalLight('#ffb3d6', 1.5);
   scene.add(hemi, sunLight, sunLight.target);
 
   // ---------- Chemin, ciel, décor ----------
@@ -164,14 +165,32 @@ export async function createExperience({ onProgress = () => {}, startAt = null }
   const smoothLook = new THREE.Vector3();
   let firstFrame = true;
 
-  function placeCamera(camS) {
+  // Légère parallaxe : la caméra se décale un peu vers la souris (ordinateur uniquement)
+  const parallax = { x: 0, y: 0, tx: 0, ty: 0 };
+  if (matchMedia('(hover: hover) and (pointer: fine)').matches && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    addEventListener('pointermove', (e) => {
+      parallax.tx = (e.clientX / innerWidth - 0.5) * 2;
+      parallax.ty = (e.clientY / innerHeight - 0.5) * 2;
+    }, { passive: true });
+  }
+  const side = new THREE.Vector3();
+
+  function placeCamera(camS, t, dt) {
     path.pointAt(camS, camPos);
-    camPos.y += CAM_HEIGHT;
+    camPos.y += CAM_HEIGHT + Math.sin(t * 0.7) * 0.05; // respiration très légère : la caméra « flotte »
+    // Parallaxe souris, amortie
+    const kp = 1 - Math.exp(-dt * 2.5);
+    parallax.x += (parallax.tx - parallax.x) * kp;
+    parallax.y += (parallax.ty - parallax.y) * kp;
+    path.sideAt(camS, side);
+    camPos.addScaledVector(side, parallax.x * 0.35);
+    camPos.y -= parallax.y * 0.2;
     path.pointAt(camS + CHAR_AHEAD + LOOK_AHEAD, lookPos);
     lookPos.y += 1.6;
     camera.position.copy(camPos);
     if (firstFrame) { smoothLook.copy(lookPos); firstFrame = false; }
-    smoothLook.lerp(lookPos, 0.2);
+    // Amorti indépendant de la fréquence d'affichage (même rendu à 60 et 120 images/s)
+    smoothLook.lerp(lookPos, 1 - Math.exp(-dt * 9));
     camera.lookAt(smoothLook);
   }
 
@@ -183,11 +202,12 @@ export async function createExperience({ onProgress = () => {}, startAt = null }
   function tick() {
     const dt = Math.min(clock.getDelta(), 0.05);
     const t = clock.elapsedTime;
-    progress += (target - progress) * Math.min(1, dt * 4);
+    // Défilement amorti : la caméra glisse jusqu'à sa position au lieu d'y sauter
+    progress += (target - progress) * (1 - Math.exp(-dt * 3.2));
     if (Math.abs(target - progress) < 1e-5) progress = target;
 
     const camS = camSAt(progress);
-    placeCamera(camS);
+    placeCamera(camS, t, dt);
 
     // Ambiance : on passe du coucher de soleil au monde doré en prenant de l'altitude
     const mood = THREE.MathUtils.smoothstep(camera.position.y, 8, 40);

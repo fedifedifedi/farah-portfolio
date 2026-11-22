@@ -72,7 +72,7 @@ function cursorTrail() {
   addEventListener('pointermove', (e) => {
     if (e.pointerType !== 'mouse') return;
     const d = Math.hypot(e.clientX - lx, e.clientY - ly);
-    if (d < 14) return;
+    if (d < 22) return; // traînée plus discrète
     lx = e.clientX;
     ly = e.clientY;
     parts.push({
@@ -96,16 +96,49 @@ function cardTilt() {
     const x = (e.clientX - r.left) / r.width - 0.5;
     const y = (e.clientY - r.top) / r.height - 0.5;
     card.classList.add('is-tilt');
-    card.style.setProperty('--ry', (x * 14).toFixed(1) + 'deg');
-    card.style.setProperty('--rx', (-y * 14).toFixed(1) + 'deg');
+    card.style.setProperty('--ry', (x * 8).toFixed(1) + 'deg');
+    card.style.setProperty('--rx', (-y * 8).toFixed(1) + 'deg');
   }, { passive: true });
+}
+
+/** Anneau qui suit la souris avec un léger retard, et grossit sur tout ce qui est cliquable */
+function cursorRing() {
+  const ring = document.createElement('div');
+  ring.className = 'cursor-ring';
+  ring.setAttribute('aria-hidden', 'true');
+  document.body.append(ring);
+  const INTERACTIVE = 'a, button, [role="button"], .c-card, label, summary, #scene.is-pointer';
+  let x = -100, y = -100, cx = -100, cy = -100, raf = 0, last = performance.now();
+
+  const tick = (now) => {
+    const dt = Math.min(0.05, (now - last) / 1000);
+    last = now;
+    const k = 1 - Math.exp(-dt * 18); // suit vite, mais sans à-coups
+    cx += (x - cx) * k;
+    cy += (y - cy) * k;
+    ring.style.transform = `translate3d(${cx.toFixed(1)}px, ${cy.toFixed(1)}px, 0)`;
+    raf = Math.abs(x - cx) + Math.abs(y - cy) > 0.2 ? requestAnimationFrame(tick) : 0;
+  };
+  addEventListener('pointermove', (e) => {
+    if (e.pointerType !== 'mouse') return;
+    if (cx < -50) { cx = e.clientX; cy = e.clientY; }
+    x = e.clientX;
+    y = e.clientY;
+    ring.classList.add('is-on');
+    ring.classList.toggle('is-hover', !!e.target.closest?.(INTERACTIVE));
+    if (!raf) { last = performance.now(); raf = requestAnimationFrame(tick); }
+  }, { passive: true });
+  addEventListener('pointerdown', () => ring.classList.add('is-down'));
+  addEventListener('pointerup', () => ring.classList.remove('is-down'));
+  document.documentElement.addEventListener('pointerleave', () => ring.classList.remove('is-on'));
 }
 
 export function initFx() {
   if (reducedMotion) return;
   const intro = document.getElementById('intro');
-  if (intro) sparkles(intro);
+  if (intro) sparkles(intro, 12);
   if (finePointer) {
+    cursorRing();
     cursorTrail();
     cardTilt();
   }

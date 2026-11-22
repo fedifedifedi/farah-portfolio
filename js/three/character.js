@@ -39,9 +39,10 @@ export function createCharacter() {
   }, { passive: true });
 
   // ---------- Ombre douce au sol ----------
+  // Ombre floue (dégradé radial) plutôt qu'un disque net
   const shadow = new THREE.Mesh(
-    new THREE.CircleGeometry(0.5, 16).rotateX(-Math.PI / 2),
-    new THREE.MeshBasicMaterial({ color: '#5a2c4f', transparent: true, opacity: 0.25, depthWrite: false })
+    new THREE.PlaneGeometry(1.6, 1.6).rotateX(-Math.PI / 2),
+    new THREE.MeshBasicMaterial({ color: '#5a2c4f', map: getDotTexture(), transparent: true, opacity: 0.32, depthWrite: false })
   );
 
   // ---------- Traînée rose quand elle vole (comme les Super Nanas) ----------
