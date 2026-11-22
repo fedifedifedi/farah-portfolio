@@ -11,14 +11,14 @@ import { CARTOON_W, CARTOON_H, cartoonState, drawFarah, blendExpression, loadIll
 const BUBBLES = { left: 'Par ici ?', center: 'Coucou !', right: 'Et par là ?' };
 
 const PHOTO = 'images/avatar.jpg';
-// Position des yeux sur la photo (en pixels de l'image, 720 × 960) : les iris y suivent le curseur.
+// Position des yeux sur la photo (en pixels de l'image, 765 × 1024) : les iris y suivent le curseur.
 // Si tu changes de photo, mets à jour ces valeurs, ou laisse [] pour désactiver l'effet.
 //   x, y : centre de l'œil ; rx, ry : demi-largeur et demi-hauteur de l'ouverture ; angle : inclinaison (radians)
 const EYES = [
-  { x: 88, y: 436, rx: 25, ry: 11, angle: -0.18 },
-  { x: 279, y: 368, rx: 29, ry: 13, angle: -0.25 },
+  { x: 362, y: 394, rx: 24, ry: 10, angle: 0.04 },
+  { x: 457, y: 399, rx: 22, ry: 10, angle: -0.06 },
 ];
-const EYE_SHIFT = { x: 12, y: 4.5 }; // déplacement maximal des iris (pixels de l'image)
+const EYE_SHIFT = { x: 7, y: 2.5 }; // déplacement maximal des iris (pixels de l'image)
 const VIDEOS = {
   left: 'images/avatar-left.mp4',
   center: 'images/avatar-center.mp4',
