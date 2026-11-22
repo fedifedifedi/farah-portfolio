@@ -7,6 +7,11 @@ import { createCharacter } from './character.js';
 import { createPanels } from './panels.js';
 import { createOverlays } from './overlays.js';
 import { openProject } from '../modal.js';
+import { createGlitter } from './glitter.js';
+import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
+import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
+import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
+import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
 
 const CHAR_AHEAD = 6;   // distance caméra → scooter (le long du chemin)
 const LOOK_AHEAD = 9;   // la caméra regarde un peu plus loin que le scooter
@@ -73,6 +78,24 @@ export async function createExperience({ onProgress = () => {}, startAt = null }
   const panels = createPanels(path, world, { manager });
   scene.add(panels.group);
   if (!loadingStarted) imagesLoaded(); // aucun projet avec image
+
+  // ---------- Ambiance « girly glowy » ----------
+  // Paillettes roses partout dans l'air
+  const glitter = createGlitter({ quality });
+  scene.add(glitter.points);
+  // Lueur (bloom) : tout ce qui est lumineux (néons, paillettes, soleil, lanternes) rayonne en rose.
+  // Ordinateur uniquement : sur téléphone, on garde un rendu simple et fluide.
+  let composer = null;
+  let bloom = null;
+  if (!isMobile) {
+    composer = new EffectComposer(renderer);
+    composer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
+    composer.setSize(innerWidth, innerHeight);
+    composer.addPass(new RenderPass(scene, camera));
+    bloom = new UnrealBloomPass(new THREE.Vector2(innerWidth, innerHeight), 0.55, 0.7, 0.8);
+    composer.addPass(bloom);
+    composer.addPass(new OutputPass());
+  }
 
   // ---------- Scroll → progression ----------
   const travel = path.length - CHAR_AHEAD - LOOK_AHEAD;
@@ -214,9 +237,15 @@ export async function createExperience({ onProgress = () => {}, startAt = null }
     sky.update(camera, mood);
     scene.fog.color.copy(fogSunset).lerp(fogGolden, mood);
     scene.fog.far = 120 + mood * 60;
+    if (bloom) {
+      // Dans le ciel très clair, on réduit la lueur pour que les affiches restent nettes
+      bloom.strength = 0.55 - mood * 0.4;
+      bloom.threshold = 0.8 + mood * 0.17;
+    }
 
     world.update(t, camera);
     clouds.update(t, camera);
+    glitter.update(t, camera);
 
     const charS = camS + CHAR_AHEAD;
     const speed = prevCharS === null ? 0 : Math.abs(charS - prevCharS) / Math.max(dt, 1e-4);
@@ -231,13 +260,15 @@ export async function createExperience({ onProgress = () => {}, startAt = null }
     panels.update(t, dt, camS, hovered, camera);
     overlays.update(camS, progress);
 
-    renderer.render(scene, camera);
+    if (composer) composer.render();
+    else renderer.render(scene, camera);
   }
 
   function resize() {
     camera.aspect = innerWidth / innerHeight;
     camera.updateProjectionMatrix();
     renderer.setSize(innerWidth, innerHeight, false);
+    composer?.setSize(innerWidth, innerHeight);
   }
   addEventListener('resize', resize);
 

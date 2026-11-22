@@ -93,8 +93,8 @@ export function createClouds(path, { quality = 1 } = {}) {
 
 // Deux ambiances roses (#F4B3DA / #F1C4DD) : au sol (coucher de soleil) et dans les nuages
 export const MOODS = {
-  sunset: { top: '#4e2f7a', horizon: '#f4b3da', bottom: '#e39cc4', fog: '#f1c4dd' },
-  golden: { top: '#e98cc2', horizon: '#ffe3ef', bottom: '#fff5fa', fog: '#f8d6e9' },
+  sunset: { top: '#a8509f', horizon: '#ffc4e3', bottom: '#f4a6d0', fog: '#f7c3df' },
+  golden: { top: '#e57fbd', horizon: '#ffd3ea', bottom: '#ffe0ef', fog: '#f6c8e1' },
 };
 
 export function createSky() {
@@ -146,7 +146,7 @@ export function createSky() {
   );
   const glow = new THREE.Mesh(
     new THREE.CircleGeometry(60, 40),
-    new THREE.MeshBasicMaterial({ color: '#fbd0e6', transparent: true, opacity: 0.45, fog: false, depthWrite: false })
+    new THREE.MeshBasicMaterial({ color: '#ffd6ec', transparent: true, opacity: 0.6, fog: false, depthWrite: false })
   );
   for (const [m, d] of [[glow, 395], [sun, 390]]) {
     m.position.copy(sunDir).multiplyScalar(d);

@@ -4,7 +4,7 @@ import * as THREE from 'three';
 import { content } from '../content.js';
 import { projects } from '../projects.js';
 import { STAGE_MARKERS } from './path.js';
-import { flatMat } from './utils.js';
+import { flatMat, getDotTexture } from './utils.js';
 
 const INK = '#2b1b3d';
 const CREAM = '#fff6fb';
@@ -209,43 +209,101 @@ export function createPanels(path, world, { manager } = {}) {
     animated.push({ kind: 'float', obj: title, baseY: title.position.y, phase: 0 });
   }
 
+  // Chaque projet est exposé comme une œuvre : affiche épaisse sur un socle flottant,
+  // contour néon rose, halo lumineux, paillettes qui tournent autour, légère oscillation.
   const loader = new THREE.TextureLoader(manager);
-  const frameMat = flatMat({ color: '#f4b3da', emissive: '#a8467e', emissiveIntensity: 0.25 });
+  const glowTex = getDotTexture();
+  const pearl = new THREE.MeshStandardMaterial({ color: '#fbd3e6', roughness: 0.28, metalness: 0.35, emissive: '#f39bc8', emissiveIntensity: 0.18 });
+  const neonMat = new THREE.MeshBasicMaterial({ color: '#ff8fd0' });
+  const glowMat = (color, opacity) => new THREE.MeshBasicMaterial({ color, map: glowTex, transparent: true, opacity, depthWrite: false, blending: THREE.AdditiveBlending });
   projects.forEach((proj, i) => {
     // Un projet tous les 24 m environ (resserré si la liste est longue)
     const gap = projects.length > 1 ? Math.min(24, (sProj1 - sProj0) / (projects.length - 1)) : 0;
     const s = sProj0 + gap * i;
     const side = i % 2 ? -1 : 1;
     const H = 4.6; // grandes affiches : ce sont les vraies stars du portfolio
-    const frame = new THREE.Group();
-    const back = new THREE.Mesh(new THREE.BoxGeometry(1, 1, 0.16), frameMat);
-    back.position.z = -0.1;
+    const D = 0.14; // épaisseur de l'affiche
+
+    const frame = new THREE.Group();   // position dans le monde (flotte)
+    const poster = new THREE.Group();  // affiche + néon (oscille doucement)
+    frame.add(poster);
+
+    // Halo rose derrière l'affiche
+    const halo = new THREE.Mesh(new THREE.PlaneGeometry(1, 1), glowMat('#ff7fc4', 0.55));
+    halo.position.z = -0.25;
+    poster.add(halo);
+    // Affiche épaisse : tranches nacrées, image sur la face avant
+    const body = new THREE.Mesh(new THREE.BoxGeometry(1, 1, D), pearl);
+    body.position.z = -D / 2;
     const imgMat = new THREE.MeshBasicMaterial({ color: '#ffffff' });
     const img = new THREE.Mesh(new THREE.PlaneGeometry(1, 1), imgMat);
-    frame.add(back, img);
+    img.position.z = 0.002;
+    poster.add(body, img);
+    // Contour néon (4 baguettes lumineuses)
+    const neon = [0, 1, 2, 3].map(() => {
+      const m = new THREE.Mesh(new THREE.BoxGeometry(1, 1, 0.05), neonMat);
+      poster.add(m);
+      return m;
+    });
 
-    const setAspect = (aspect) => {
-      img.scale.set(H * aspect, H, 1);
-      back.scale.set(H * aspect + 0.3, H + 0.3, 1);
-      label.position.y = -H / 2 - 0.65;
-    };
+    // Socle flottant sous l'affiche, avec anneau lumineux et lueur au sol
+    const base = new THREE.Group();
+    const plinth = new THREE.Mesh(new THREE.CylinderGeometry(1.35, 1.55, 0.28, 40), pearl);
+    const ring = new THREE.Mesh(new THREE.TorusGeometry(1.5, 0.035, 8, 64).rotateX(Math.PI / 2), neonMat);
+    ring.position.y = -0.14;
+    const pool = new THREE.Mesh(new THREE.PlaneGeometry(5.5, 5.5).rotateX(-Math.PI / 2), glowMat('#ff8cc8', 0.6));
+    pool.position.y = -0.2;
+    base.add(plinth, ring, pool);
+    frame.add(base);
 
-    // Étiquette sous le cadre : catégorie + titre
-    const label = sign(3.6, 0.8, (ctx, w, h) => {
-      roundRect(ctx, 0, 0, w, h, 24);
+    // Paillettes qui tournent autour de l'œuvre
+    const N = 26;
+    const sp = new Float32Array(N * 3);
+    for (let k = 0; k < N; k++) {
+      const a = (k / N) * Math.PI * 2;
+      const r = 2.6 + Math.random() * 0.9;
+      sp.set([Math.cos(a) * r, (Math.random() - 0.5) * H * 1.1, Math.sin(a) * r * 0.5], k * 3);
+    }
+    const sparkGeo = new THREE.BufferGeometry();
+    sparkGeo.setAttribute('position', new THREE.BufferAttribute(sp, 3));
+    const sparkles = new THREE.Points(sparkGeo, new THREE.PointsMaterial({
+      color: '#fff0fa', map: glowTex, size: 0.32, transparent: true, opacity: 0.9, depthWrite: false, blending: THREE.AdditiveBlending,
+    }));
+    frame.add(sparkles);
+
+    // Étiquette : numéro, catégorie, titre
+    const label = sign(3.8, 0.95, (ctx, w, h) => {
+      roundRect(ctx, 0, 0, w, h, 30);
       ctx.fillStyle = CREAM;
       ctx.fill();
-      text(ctx, (proj.categorie || '').toUpperCase(), w / 2, h * 0.36, { font: `700 ${h * 0.16}px ${SANS}`, color: CORAL, spacing: 4, maxWidth: w * 0.9 });
-      text(ctx, proj.titre, w / 2, h * 0.76, { font: `700 ${h * 0.27}px ${DISPLAY}`, color: INK, maxWidth: w * 0.92 });
+      text(ctx, String(i + 1).padStart(2, '0'), w * 0.1, h * 0.66, { font: `400 ${h * 0.42}px ${DISPLAY}`, color: CORAL, align: 'left' });
+      text(ctx, (proj.categorie || '').toUpperCase(), w * 0.27, h * 0.38, { font: `700 ${h * 0.13}px ${SANS}`, color: CORAL, align: 'left', spacing: 4, maxWidth: w * 0.68 });
+      text(ctx, proj.titre, w * 0.27, h * 0.72, { font: `700 ${h * 0.24}px ${DISPLAY}`, color: INK, align: 'left', maxWidth: w * 0.68 });
     });
+    label.position.z = 0.3;
     frame.add(label);
+
+    const setAspect = (aspect) => {
+      const W = H * aspect;
+      img.scale.set(W, H, 1);
+      body.scale.set(W + 0.12, H + 0.12, 1);
+      halo.scale.set(W * 2.1, H * 1.7, 1);
+      const t = 0.05;
+      neon[0].scale.set(W + 0.3, t, 1); neon[0].position.set(0, H / 2 + 0.13, 0.01);
+      neon[1].scale.set(W + 0.3, t, 1); neon[1].position.set(0, -H / 2 - 0.13, 0.01);
+      neon[2].scale.set(t, H + 0.3, 1); neon[2].position.set(-W / 2 - 0.13, 0, 0.01);
+      neon[3].scale.set(t, H + 0.3, 1); neon[3].position.set(W / 2 + 0.13, 0, 0.01);
+      base.position.y = -H / 2 - 1.25;
+      base.scale.setScalar(Math.max(0.85, W / 3.4));
+      label.position.y = -H / 2 - 0.72;
+    };
     setAspect(0.75);
 
     loader.load(
       proj.image,
       (tex) => {
         tex.colorSpace = THREE.SRGBColorSpace;
-        tex.anisotropy = 4;
+        tex.anisotropy = 8;
         imgMat.map = tex;
         imgMat.needsUpdate = true;
         const im = tex.image;
@@ -261,8 +319,8 @@ export function createPanels(path, world, { manager } = {}) {
     faceBack(frame, path, s, 8, 2.6); // tourné vers l'endroit où la caméra marque une pause
     skyGroup.add(frame);
 
-    [back, img, label].forEach((m) => (m.userData.projectIndex = i));
-    frames.push({ frame, index: i, hover: 0, s });
+    [body, img, label, halo].forEach((m) => (m.userData.projectIndex = i));
+    frames.push({ frame, poster, sparkles, index: i, hover: 0, s, side });
     animated.push({ kind: 'float', obj: frame, baseY: frame.position.y, phase: i * 1.7 });
   });
 
@@ -310,6 +368,12 @@ export function createPanels(path, world, { manager } = {}) {
         const target = f.index === hoveredIndex ? 1 : 0;
         f.hover += (target - f.hover) * Math.min(1, dt * 10);
         f.frame.scale.setScalar(1 + f.hover * 0.08);
+        // L'affiche oscille lentement pour montrer son épaisseur (et se stabilise au survol)
+        const sway = Math.sin(t * 0.6 + f.index * 1.3) * 0.16 * (1 - f.hover);
+        f.poster.rotation.y = sway - f.side * 0.06;
+        f.poster.rotation.x = Math.sin(t * 0.45 + f.index) * 0.03 * (1 - f.hover);
+        f.sparkles.rotation.y = t * 0.25 + f.index;
+        f.sparkles.material.opacity = 0.65 + Math.sin(t * 2.4 + f.index) * 0.3;
       }
     },
   };

@@ -33,6 +33,7 @@ export function renderClassic() {
   const root = document.getElementById('classic');
 
   root.innerHTML = `
+  <div class="c-glitter" aria-hidden="true"></div>
   <header class="c-header">
     <div class="c-wrap">
       <a class="c-logo" href="#intro">${esc(c.nom)}</a>

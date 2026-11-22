@@ -9,10 +9,10 @@ import { getDotTexture } from './utils.js';
 
 const FACE_URL = 'images/farah-visage.jpg';
 
-// Couleurs : change-les ici (veste rose bébé, haut blanc, jean)
+// Couleurs : change-les ici (tenue rose)
 const C = {
-  skin: '#f8d7bd', hair: '#6e4b33', hairLight: '#8a6244', jacket: '#f8c8dc', jacketDark: '#eeaecb', // veste rose bébé
-  top: '#fbf7f2', jeans: '#2f3550', shoes: '#ffffff', sole: '#e9dfe4',
+  skin: '#f8d7bd', hair: '#6e4b33', hairLight: '#8a6244', jacket: '#f8c8dc', jacketDark: '#f2a9cb', // tenue toute rose : veste rose bébé
+  top: '#fff4fa', jeans: '#ee9fc6', shoes: '#ffffff', sole: '#f6d3e4', // pantalon rose, baskets blanches
 };
 
 const mat = (color, roughness = 0.75) => new THREE.MeshStandardMaterial({ color, roughness, metalness: 0 });
@@ -75,7 +75,7 @@ export function createCharacter() {
   turn.add(hips);
   const HIP_Y = 0.95;
   hips.position.y = HIP_Y;
-  root.scale.setScalar(1.05);
+  root.scale.setScalar(1.15);
 
   // ---------- Bassin ----------
   const pelvis = new THREE.Group();
@@ -156,7 +156,8 @@ export function createCharacter() {
   neck.position.y = 0.57;
   spine.add(neck);
   const head = new THREE.Group();
-  head.position.y = 0.62;
+  head.position.y = 0.6;
+  head.scale.setScalar(1.3); // tête un peu plus grande : on reconnaît mieux le visage de Farah
   spine.add(head);
   const HEAD_R = 0.112;
   const skull = new THREE.Mesh(new THREE.SphereGeometry(HEAD_R, 28, 20), new THREE.MeshBasicMaterial({ color: C.skin }));

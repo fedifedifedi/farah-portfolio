@@ -429,7 +429,40 @@ body.is-classic .intro__status { display: none; }
 /* ============================================================
    VERSION CLASSIQUE (2D)
    ============================================================ */
-.classic { background: var(--cream); color: var(--ink); outline: none; }
+.classic { background: var(--cream); color: var(--ink); outline: none; position: relative; isolation: isolate; }
+
+/* Fond « girly glowy » : halos roses qui dérivent lentement et brillent, derrière tout le contenu */
+.classic::before, .classic::after {
+  content: ''; position: fixed; z-index: -1; pointer-events: none; border-radius: 50%;
+  filter: blur(70px); opacity: .75; will-change: transform;
+}
+.classic::before {
+  width: 62vmax; height: 62vmax; left: -18vmax; top: -14vmax;
+  background: radial-gradient(circle, rgba(244, 179, 218, .95), rgba(244, 179, 218, 0) 68%);
+  animation: glow-drift-a 22s ease-in-out infinite alternate;
+}
+.classic::after {
+  width: 56vmax; height: 56vmax; right: -16vmax; bottom: -18vmax;
+  background: radial-gradient(circle, rgba(255, 143, 208, .7), rgba(241, 196, 221, 0) 70%);
+  animation: glow-drift-b 26s ease-in-out infinite alternate;
+}
+@keyframes glow-drift-a { to { transform: translate(22vw, 18vh) scale(1.15); } }
+@keyframes glow-drift-b { to { transform: translate(-24vw, -22vh) scale(1.2); } }
+/* Paillettes scintillantes fixes sur tout le fond */
+.classic > .c-glitter {
+  position: fixed; inset: 0; z-index: -1; pointer-events: none;
+  background-image:
+    radial-gradient(1.6px 1.6px at 12% 18%, #fff, transparent 60%),
+    radial-gradient(1.2px 1.2px at 28% 72%, #ffd1ea, transparent 60%),
+    radial-gradient(2px 2px at 46% 34%, #fff, transparent 60%),
+    radial-gradient(1.4px 1.4px at 63% 82%, #ff9fd2, transparent 60%),
+    radial-gradient(1.8px 1.8px at 78% 22%, #fff, transparent 60%),
+    radial-gradient(1.2px 1.2px at 88% 58%, #ffd1ea, transparent 60%),
+    radial-gradient(1.6px 1.6px at 6% 88%, #fff, transparent 60%),
+    radial-gradient(1.3px 1.3px at 54% 6%, #ff9fd2, transparent 60%);
+  animation: glitter-twinkle 3.6s ease-in-out infinite alternate;
+}
+@keyframes glitter-twinkle { from { opacity: .35; } to { opacity: 1; } }
 .c-wrap { width: min(var(--container), 100%); margin: 0 auto; padding: 0 var(--gutter); }
 
 .c-header {
@@ -667,5 +700,5 @@ body.is-classic .intro__status { display: none; }
   *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; }
   .reveal, .overlay, .overlay > * { opacity: 1; transform: none; filter: none; }
   .overlay:not(.is-visible) { opacity: 0; }
-  .sparkle, .c-marquee__track { animation: none; }
+  .sparkle, .c-marquee__track, .classic::before, .classic::after, .classic > .c-glitter { animation: none; }
 }
