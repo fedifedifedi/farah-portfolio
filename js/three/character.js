@@ -283,6 +283,7 @@ export function createCharacter() {
   let walk = 0;
   let roll = 0;
   let hairLag = 0;
+  let presentK = 0;
   const damp = (cur, target, rate, dt) => cur + (target - cur) * (1 - Math.exp(-rate * dt));
 
   return {
@@ -293,7 +294,9 @@ export function createCharacter() {
      * @param s     distance sur le chemin
      * @param speed vitesse (unités/s)
      */
-    update(path, s, speed, t, dt) {
+    // present : { side: 1 (affiche à droite du chemin) ou -1 (à gauche), k: 0 à 1 } → elle présente l'affiche de la main
+    update(path, s, speed, t, dt, present = { side: 0, k: 0 }) {
+      presentK = damp(presentK, present.k, 5, dt);
       path.pointAt(s, root.position);
       path.tangentAt(s, tangent);
       root.lookAt(ahead.copy(root.position).add(tangent));
@@ -354,6 +357,15 @@ export function createCharacter() {
           az = THREE.MathUtils.lerp(az, -2.5, wave);
           ax = THREE.MathUtils.lerp(ax, -0.2, wave);
           el = THREE.MathUtils.lerp(el, 0.5 + Math.sin(t * 9) * 0.35, wave);
+        }
+        if (presentK > 0.001 && arm.side === present.side) { // bras tendu vers l'affiche, un peu vers l'avant
+          az = THREE.MathUtils.lerp(az, arm.side * 1.15, presentK);
+          ax = THREE.MathUtils.lerp(ax, -0.85, presentK);
+          el = THREE.MathUtils.lerp(el, 0.08, presentK);
+        } else if (presentK > 0.001 && present.side) { // l'autre bras se pose le long du corps
+          az = THREE.MathUtils.lerp(az, arm.side * 0.18, presentK);
+          ax = THREE.MathUtils.lerp(ax, 0.05, presentK);
+          el = THREE.MathUtils.lerp(el, 0.3, presentK);
         }
         arm.shoulder.rotation.set(ax, 0, az);
         arm.elbow.rotation.x = -el;

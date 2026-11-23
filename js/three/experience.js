@@ -271,7 +271,13 @@ export async function createExperience({ onProgress = () => {}, startAt = null }
     const charS = camS + CHAR_AHEAD;
     const speed = prevCharS === null ? 0 : Math.abs(charS - prevCharS) / Math.max(dt, 1e-4);
     prevCharS = charS;
-    rider.update(path, charS, speed, t, dt);
+    // Près d'une affiche, elle la présente de la main (côté de l'affiche : alternance droite / gauche)
+    let present = { side: 0, k: 0 };
+    panels.frameS.forEach((fs, i) => {
+      const k = 1 - THREE.MathUtils.smoothstep(Math.abs(charS - fs), 3, 9);
+      if (k > present.k) present = { side: i % 2 ? -1 : 1, k };
+    });
+    rider.update(path, charS, speed, t, dt, present);
 
     // Survol des cadres (souris uniquement, une image sur deux pour économiser)
     if (pointerActive && frame++ % 2 === 0 && camera.position.y > 30) {
