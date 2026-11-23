@@ -16,6 +16,16 @@
 
 const tous = [
   {
+    titre: 'REAKTOR — Concept « Dualité »',
+    categorie: 'Campagne publicitaire',
+    annee: '',
+    image: 'images/projets/reel-reaktor-billboard.jpg',
+    galerie: ['images/projets/reaktor-moodboard.jpg', 'images/projets/reaktor-carte-mentale.jpg', 'images/projets/reaktor-packshot.jpg'],
+    contexte: 'Concept de campagne pour la boisson énergisante REAKTOR, déclinée en deux produits : Dark Power et Focus Power.',
+    objectif: 'Traduire l’idée de dualité « Force × Énergie » : deux facettes d’une même personnalité, mises en scène par le contraste rouge / bleu, de la carte mentale au moodboard et au packshot.',
+    outils: ['Photoshop', 'Direction artistique'],
+  },
+  {
     titre: 'REAKTOR — Dualité',
     categorie: 'Photographie',
     annee: '',
@@ -30,7 +40,7 @@ const tous = [
     categorie: 'Identité visuelle',
     annee: '',
     image: 'images/projets/reel-farah-papeterie.jpg',
-    galerie: ['images/projets/charte-farah-couverture.jpg', 'images/projets/charte-farah-essence.jpg', 'images/projets/charte-farah-logo.jpg', 'images/projets/charte-farah-declinaisons.jpg', 'images/projets/charte-farah-usages.jpg', 'images/projets/charte-farah-couleurs.jpg', 'images/projets/charte-farah-typographie.jpg', 'images/projets/charte-farah-monochrome.jpg', 'images/projets/charte-farah-mockups.jpg'],
+    galerie: ['images/projets/charte-farah-couverture.jpg', 'images/projets/charte-farah-essence.jpg', 'images/projets/charte-farah-logo.jpg', 'images/projets/charte-farah-declinaisons.jpg', 'images/projets/charte-farah-usages.jpg', 'images/projets/charte-farah-couleurs.jpg', 'images/projets/charte-farah-typographie.jpg', 'images/projets/charte-farah-monochrome.jpg', 'images/projets/charte-farah-mockups.jpg', 'images/projets/reel-farah-cartes.jpg'],
     contexte: 'Projet d’infographie (DS) : identité complète d’une marque de cosmétiques bio et naturels inspirée de l’artisanat méditerranéen, « FARAH » (la joie, en arabe).',
     objectif: 'Construire toute la charte : logo calligraphique latin et arabe, zone de sécurité et taille minimale, déclinaisons et usages interdits, palette sable / olive / terracotta, typographies, version monochrome et mise en situation sur les produits.',
     outils: ['Illustrator', 'Photoshop', 'InDesign'],
