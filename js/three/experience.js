@@ -144,7 +144,7 @@ export async function createExperience({ onProgress = () => {}, startAt = null }
       { id: 'apropos', label: 'À propos', from: sAbout - 24, to: sAbout + 1, jump: sAbout - 15 },
       { id: 'competences', label: 'Compétences', from: sSkills - 24, to: sSkills + 12, jump: sSkills - 22 },
       { id: 'ciel', label: 'Vers le ciel', from: sSky - 26, to: sSky + 2, jump: sSky - 24 },
-      { id: 'projets', label: 'Projets', from: sProj0 - 18, to: sProj1 - 6, jump: sProj0 - 18 },
+      { id: 'projets', label: 'Projets', from: sProj0 - 18, to: sProj0 - 2, jump: sProj0 - 18 }, // visible seulement à l'arrivée dans les projets
       { id: 'contact', label: 'Contact', from: travel - 10, to: Infinity, jump: travel },
     ],
     {
