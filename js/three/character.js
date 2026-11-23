@@ -12,14 +12,15 @@ const FACE_URL = 'images/farah-visage.jpg';
 // Couleurs : change-les ici (tenue : robe portefeuille midi rose en satin, ceinture et collier dorés, escarpins nude)
 const C = {
   skin: '#f8d7bd', hair: '#7a5640', hairLight: '#9c7354', jacket: '#ec9cc2', jacketDark: '#dd82ad',
-  top: '#f6d2b8', /* décolleté portefeuille (peau) */ jeans: '#f8e1ea', shoes: '#e9bfa8', sole: '#c98f78', gold: '#e2bc6e',
+  top: '#ec9cc2', /* haut de la robe rose, visible dans l'ouverture du blazer */ jeans: '#f8e1ea', shoes: '#e9bfa8', sole: '#c98f78', gold: '#e2bc6e',
 };
 
 const mat = (color, roughness = 0.75) => new THREE.MeshStandardMaterial({ color, roughness, metalness: 0 });
 const M = {
   skin: new THREE.MeshBasicMaterial({ color: C.skin }), hair: mat(C.hair, 0.55), hairLight: mat(C.hairLight, 0.55),
   jacket: mat(C.jacket, 0.38), jacketDark: mat(C.jacketDark, 0.35), // satin : légèrement brillant
-  legs: mat(C.skin, 0.55), top: mat(C.top, 0.4),
+  legs: mat(C.skin, 0.55),
+  blazer: new THREE.MeshStandardMaterial({ color: '#f6ece2', roughness: 0.6, emissive: '#f3dfcc', emissiveIntensity: 0.4 }), // un peu lumineux : reste crème sous la lumière rose // blazer crème porté sur la robe rose top: mat(C.top, 0.4),
   jeans: mat(C.jeans, 0.7), shoes: mat(C.shoes, 0.35), sole: mat(C.sole, 0.5),
   gold: new THREE.MeshStandardMaterial({ color: C.gold, metalness: 0.8, roughness: 0.28 }),
 };
@@ -128,7 +129,7 @@ export function createCharacter() {
   const torsoProfile = [
     [0.135, 0], [0.128, 0.08], [0.112, 0.18], [0.125, 0.28], [0.15, 0.37], [0.158, 0.44], [0.13, 0.5], [0.06, 0.54],
   ].map(([r, y]) => new THREE.Vector2(r, y));
-  const torso = new THREE.Mesh(new THREE.LatheGeometry(torsoProfile, 24), M.jacket);
+  const torso = new THREE.Mesh(new THREE.LatheGeometry(torsoProfile, 24), M.blazer);
   torso.scale.set(1.18, 1, 0.78);
   spine.add(torso);
   // Haut blanc visible dans l'ouverture en V de la veste (comme sur son avatar)
@@ -141,7 +142,7 @@ export function createCharacter() {
   for (const side of [1, -1]) {
     const lapel = new THREE.Shape();
     lapel.moveTo(side * 0.07, 0.53).lineTo(side * 0.1, 0.5).lineTo(side * 0.022, 0.33).lineTo(0, 0.36).lineTo(side * 0.07, 0.53);
-    const m = new THREE.Mesh(new THREE.ShapeGeometry(lapel), new THREE.MeshStandardMaterial({ color: C.jacketDark, roughness: 0.3, side: THREE.DoubleSide }));
+    const m = new THREE.Mesh(new THREE.ShapeGeometry(lapel), new THREE.MeshStandardMaterial({ color: '#e3cbb6', roughness: 0.3, side: THREE.DoubleSide }));
     m.position.z = 0.13;
     spine.add(m);
   }
@@ -161,9 +162,9 @@ export function createCharacter() {
   const arms = [1, -1].map((side) => {
     const shoulder = new THREE.Group();
     shoulder.position.set(side * 0.19, 0.46, -0.01);
-    const cap = new THREE.Mesh(new THREE.SphereGeometry(0.058, 14, 10), M.jacket);
+    const cap = new THREE.Mesh(new THREE.SphereGeometry(0.058, 14, 10), M.blazer);
     shoulder.add(cap);
-    const upper = segment(0.27, 0.046, 0.04, M.jacket);
+    const upper = segment(0.27, 0.046, 0.04, M.blazer);
     shoulder.add(upper);
     const elbow = new THREE.Group();
     elbow.position.y = -0.29;
