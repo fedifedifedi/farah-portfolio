@@ -197,6 +197,7 @@ export function createPanels(path, world, { manager } = {}) {
 
   // ============ 3 bis. Certificats : chevalets dorés en face du mur des compétences ============
   const certs = [];
+  const certBoards = []; // pour l'oscillation et le scintillement
   {
     const list = content.certificats || [];
     const certLoader = new THREE.TextureLoader(manager);
@@ -216,8 +217,19 @@ export function createPanels(path, world, { manager } = {}) {
       board.position.y = 2.05;
       board.rotation.x = -0.1;
       holder.add(board);
-      const frame = new THREE.Mesh(new THREE.BoxGeometry(1, 1, 0.06), gold);
-      frame.position.z = -0.04;
+      const frame = new THREE.Mesh(new THREE.BoxGeometry(1, 1, 0.12), gold); // cadre doré épais
+      frame.position.z = -0.07;
+      // Halo rose derrière le document, et paillettes autour
+      const halo = new THREE.Mesh(new THREE.PlaneGeometry(1, 1), new THREE.MeshBasicMaterial({ color: '#ff8fc8', map: getDotTexture(), transparent: true, opacity: 0.5, depthWrite: false, blending: THREE.AdditiveBlending }));
+      halo.position.z = -0.2;
+      board.add(halo);
+      const sp = new Float32Array(18 * 3);
+      for (let k = 0; k < 18; k++) { const a = (k / 18) * Math.PI * 2; sp.set([Math.cos(a) * 1.6, Math.sin(a) * 1.2, 0.1], k * 3); }
+      const sg = new THREE.BufferGeometry();
+      sg.setAttribute('position', new THREE.BufferAttribute(sp, 3));
+      const sparkles = new THREE.Points(sg, new THREE.PointsMaterial({ color: '#fff0fa', map: getDotTexture(), size: 0.2, transparent: true, depthWrite: false, blending: THREE.AdditiveBlending }));
+      board.add(sparkles);
+      certBoards.push({ board, sparkles, i });
       const imgMat = new THREE.MeshBasicMaterial({ color: '#e3dade' }); // papier blanc adouci : pas d'éblouissement
       const img = new THREE.Mesh(new THREE.PlaneGeometry(1, 1), imgMat);
       board.add(frame, img);
@@ -232,7 +244,8 @@ export function createPanels(path, world, { manager } = {}) {
       const setAspect = (a) => {
         const W = H * a;
         img.scale.set(W, H, 1);
-        frame.scale.set(W + 0.12, H + 0.12, 1);
+        frame.scale.set(W + 0.16, H + 0.16, 1);
+        halo.scale.set(W * 2.2, H * 2, 1);
         label.position.y = -H / 2 - 0.35;
       };
       setAspect(4 / 3);
@@ -265,7 +278,7 @@ export function createPanels(path, world, { manager } = {}) {
       text(ctx, 'Projets', w / 2, h * 0.58, { font: `900 ${h * 0.42}px ${DISPLAY}`, color: CREAM });
       text(ctx, 'CLIQUEZ SUR UN CADRE POUR L’OUVRIR', w / 2, h * 0.82, { font: `700 ${h * 0.075}px ${SANS}`, color: PINK, spacing: 6 });
     });
-    const s = sProj0 - 17; // bien avant la première affiche : un vrai espace entre le titre et les projets
+    const s = sProj0 - 12; // un peu avant la première affiche : un espace, sans trop d'écart
     path.pointAt(s, title.position);
     title.position.y += 4.8;
     faceBack(title, path, s, 16, 2);
@@ -417,6 +430,11 @@ export function createPanels(path, world, { manager } = {}) {
     frameS: frames.map((f) => f.s), // position de chaque projet sur le chemin
     update(t, dt, camS, hoveredIndex, camera) {
       skyGroup.visible = camera.position.y > 6;
+      for (const b of certBoards) { // les certificats oscillent doucement et scintillent
+        b.board.rotation.y = Math.sin(t * 0.7 + b.i * 1.4) * 0.14;
+        b.sparkles.rotation.z = t * 0.2 + b.i;
+        b.sparkles.material.opacity = 0.6 + Math.sin(t * 2.2 + b.i) * 0.3;
+      }
       for (const a of animated) {
         if (a.kind === 'float') {
           a.obj.position.y = a.baseY + Math.sin(t * 0.9 + a.phase) * 0.18;

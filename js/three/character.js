@@ -9,16 +9,17 @@ import { getDotTexture } from './utils.js';
 
 const FACE_URL = 'images/farah-visage.jpg';
 
-// Couleurs : change-les ici (tenue chic : blazer rose, chemisier crème, pantalon large clair, escarpins nude, bijoux dorés)
+// Couleurs : change-les ici (tenue : robe portefeuille midi rose en satin, ceinture et collier dorés, escarpins nude)
 const C = {
-  skin: '#f8d7bd', hair: '#7a5640', hairLight: '#9c7354', jacket: '#f1aecb', jacketDark: '#e596bb',
-  top: '#fff6f0', jeans: '#f8e1ea', shoes: '#e9bfa8', sole: '#c98f78', gold: '#e2bc6e',
+  skin: '#f8d7bd', hair: '#7a5640', hairLight: '#9c7354', jacket: '#ec9cc2', jacketDark: '#dd82ad',
+  top: '#f6d2b8', /* décolleté portefeuille (peau) */ jeans: '#f8e1ea', shoes: '#e9bfa8', sole: '#c98f78', gold: '#e2bc6e',
 };
 
 const mat = (color, roughness = 0.75) => new THREE.MeshStandardMaterial({ color, roughness, metalness: 0 });
 const M = {
   skin: new THREE.MeshBasicMaterial({ color: C.skin }), hair: mat(C.hair, 0.55), hairLight: mat(C.hairLight, 0.55),
-  jacket: mat(C.jacket, 0.5), jacketDark: mat(C.jacketDark, 0.45), top: mat(C.top, 0.4),
+  jacket: mat(C.jacket, 0.38), jacketDark: mat(C.jacketDark, 0.35), // satin : légèrement brillant
+  legs: mat(C.skin, 0.55), top: mat(C.top, 0.4),
   jeans: mat(C.jeans, 0.7), shoes: mat(C.shoes, 0.35), sole: mat(C.sole, 0.5),
   gold: new THREE.MeshStandardMaterial({ color: C.gold, metalness: 0.8, roughness: 0.28 }),
 };
@@ -82,17 +83,27 @@ export function createCharacter() {
   // ---------- Bassin ----------
   const pelvis = new THREE.Group();
   hips.add(pelvis);
-  const pelvisMesh = new THREE.Mesh(new THREE.SphereGeometry(0.15, 20, 14), M.jeans);
+  const pelvisMesh = new THREE.Mesh(new THREE.SphereGeometry(0.15, 20, 14), M.jacket);
   pelvisMesh.scale.set(1.12, 0.78, 0.82);
   pelvisMesh.position.y = 0.02;
   pelvis.add(pelvisMesh);
+  // Jupe évasée de la robe (midi : s'arrête sous le genou), avec un ourlet plus foncé
+  const skirtProfile = [[0.255, -0.6], [0.24, -0.45], [0.205, -0.25], [0.165, -0.05], [0.14, 0.08]].map(([r, y]) => new THREE.Vector2(r, y));
+  const skirtMat = M.jacket.clone();
+  skirtMat.side = THREE.DoubleSide;
+  const skirt = new THREE.Mesh(new THREE.LatheGeometry(skirtProfile, 32), skirtMat);
+  skirt.scale.set(1.05, 1, 0.82);
+  const hem = new THREE.Mesh(new THREE.TorusGeometry(0.255, 0.008, 6, 40).rotateX(Math.PI / 2), M.jacketDark);
+  hem.scale.set(1.05, 1, 0.82);
+  hem.position.y = -0.6;
+  pelvis.add(skirt, hem);
 
   // ---------- Jambes ----------
   const legs = [1, -1].map((side) => { // side 1 = gauche (+X), -1 = droite
     // Pantalon large taille haute : la jambe s'évase vers le bas
-    const thigh = segment(0.42, 0.078, 0.062, M.jeans);
+    const thigh = segment(0.42, 0.066, 0.046, M.legs);
     thigh.position.set(side * 0.085, -0.02, 0);
-    const shin = segment(0.41, 0.062, 0.072, M.jeans);
+    const shin = segment(0.41, 0.045, 0.03, M.legs);
     shin.position.y = -0.44;
     const ankle = new THREE.Group();
     ankle.position.y = -0.43;
@@ -152,12 +163,12 @@ export function createCharacter() {
     shoulder.position.set(side * 0.19, 0.46, -0.01);
     const cap = new THREE.Mesh(new THREE.SphereGeometry(0.058, 14, 10), M.jacket);
     shoulder.add(cap);
-    const upper = segment(0.27, 0.05, 0.042, M.jacket);
+    const upper = segment(0.27, 0.046, 0.04, M.jacket);
     shoulder.add(upper);
     const elbow = new THREE.Group();
     elbow.position.y = -0.29;
     upper.add(elbow);
-    const fore = segment(0.23, 0.04, 0.034, M.jacket);
+    const fore = segment(0.23, 0.036, 0.03, M.legs);
     elbow.add(fore);
     const hand = new THREE.Mesh(new THREE.SphereGeometry(0.038, 12, 10), M.skin);
     hand.scale.set(0.75, 1.25, 0.95);
