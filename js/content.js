@@ -57,4 +57,13 @@ export const content = {
   },
 
   cv: 'images/cv-farah.pdf',
+
+  // Attestations et certificats (section « Certificats » de la version classique).
+  // Les données personnelles (n° de carte d'identité, date de naissance) sont masquées sur les images.
+  certificats: [
+    { titre: 'Graphic Design Masterclass Intermediate', emetteur: 'Udemy · Lindsay Marsh', date: 'Novembre 2026', image: 'images/certificats/udemy-graphic-design.jpg' },
+    { titre: 'Stage en montage', emetteur: 'Télévision Tunisienne', date: '15 juillet – 15 août 2026', image: 'images/certificats/stage-television-tunisienne.jpg' },
+    { titre: 'Workshop « Quelle sobriété numérique en 2050 ? »', emetteur: 'RAID 2026 · ESSTED', date: 'Avril 2026', image: 'images/certificats/raid-2026.jpg' },
+    { titre: 'Hackathon : refonte du logo et de la charte graphique', emetteur: 'Flexo Print · Rose Blanche Group', date: 'Février 2026', image: 'images/certificats/hackathon-flexo-print.jpg' },
+  ],
 };

@@ -38,7 +38,7 @@ export function renderClassic() {
     <div class="c-wrap">
       <a class="c-logo" href="#intro">${esc(c.nom)}</a>
       <nav class="c-nav" aria-label="Navigation principale">
-        <a href="#c-projets">Projets</a><a href="#c-apropos">À propos</a><a href="#c-cv">CV</a><a href="#c-contact">Contact</a>
+        <a href="#c-projets">Projets</a><a href="#c-apropos">À propos</a><a href="#c-certificats">Certificats</a><a href="#c-cv">CV</a><a href="#c-contact">Contact</a>
       </nav>
     </div>
   </header>
@@ -110,6 +110,27 @@ export function renderClassic() {
           <h3>Langues</h3>
           <ul class="c-skills c-skills--soft">${c.langues.map((s) => `<li>${esc(s)}</li>`).join('')}</ul>
         </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="c-section" id="c-certificats" aria-labelledby="c-certificats-title">
+    <div class="c-wrap">
+      <div class="c-section__head reveal">
+        <h2 id="c-certificats-title">Certificats</h2>
+        <p>Attestations de stage, de workshop, de hackathon et de formation. Cliquez sur un document pour l’agrandir.</p>
+      </div>
+      <div class="c-certs">
+        ${(c.certificats || [])
+          .map(
+            (cert) => `
+        <a class="c-cert reveal" href="${esc(cert.image)}" target="_blank" rel="noopener">
+          <span class="c-cert__img"><img src="${esc(cert.image)}" alt="Attestation : ${esc(cert.titre)}" loading="lazy" decoding="async"></span>
+          <span class="c-cert__meta">${esc(cert.emetteur)} · ${esc(cert.date)}</span>
+          <span class="c-cert__title">${esc(cert.titre)}</span>
+        </a>`
+          )
+          .join('')}
       </div>
     </div>
   </section>
