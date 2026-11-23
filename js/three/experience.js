@@ -6,7 +6,7 @@ import { createWorld } from './world.js';
 import { createCharacter } from './character.js';
 import { createPanels } from './panels.js';
 import { createOverlays } from './overlays.js';
-import { openProject } from '../modal.js';
+import { createDetail } from './detail.js';
 import { createGlitter } from './glitter.js';
 import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
 import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
@@ -180,10 +180,21 @@ export async function createExperience({ onProgress = () => {}, startAt = null }
     pointer.cx = e.clientX;
     pointer.cy = e.clientY;
   });
+  // Vue détaillée des projets, en 3D dans la scène
+  const detail = createDetail(scene);
+  let detailScroll = 0;
+  const showProject = (i) => { detail.open(i, camera); detailScroll = target; };
+  addEventListener('project3d', (e) => showProject(e.detail)); // boutons des projets dans le texte HTML
   canvas.addEventListener('click', (e) => {
+    if (detail.isOpen()) {
+      pointer.set((e.clientX / innerWidth) * 2 - 1, -(e.clientY / innerHeight) * 2 + 1);
+      raycaster.setFromCamera(pointer, camera);
+      detail.handle(raycaster.intersectObjects(detail.clickables, false)[0]?.object);
+      return;
+    }
     const obj = pickObject(e.clientX, e.clientY);
     if (obj?.userData.certUrl) open(obj.userData.certUrl, '_blank', 'noopener'); // certificat : ouvert en grand
-    else if (obj && obj.userData.projectIndex >= 0) openProject(obj.userData.projectIndex);
+    else if (obj && obj.userData.projectIndex >= 0) showProject(obj.userData.projectIndex);
   });
 
   // ---------- Caméra ----------
@@ -262,6 +273,9 @@ export async function createExperience({ onProgress = () => {}, startAt = null }
       canvas.classList.toggle('is-pointer', hovered >= 0);
     }
     panels.update(t, dt, camS, hovered, camera);
+    // La vue détaillée se ferme dès qu'on reprend le voyage
+    if (detail.isOpen() && Math.abs(target - detailScroll) > 0.004) detail.close();
+    detail.update(camera);
     overlays.update(camS, progress);
 
     if (composer) composer.render();

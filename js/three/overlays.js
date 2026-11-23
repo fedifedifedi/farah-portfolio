@@ -2,7 +2,6 @@
 // + menu des étapes à droite de l'écran.
 import { content } from '../content.js';
 import { projects } from '../projects.js';
-import { openProject } from '../modal.js';
 import { socialLinks, timeline } from '../classic.js';
 
 const esc = (s = '') => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
@@ -65,7 +64,7 @@ export function createOverlays(stages, { jumpTo }) {
     b.addEventListener('click', () => jumpTo(stages.find((s) => s.id === b.dataset.jump).jump))
   );
   root.querySelectorAll('[data-project]').forEach((b) =>
-    b.addEventListener('click', () => openProject(Number(b.dataset.project)))
+    b.addEventListener('click', () => dispatchEvent(new CustomEvent('project3d', { detail: Number(b.dataset.project) }))) // ouvert en 3D
   );
 
   const panels = stages.map((s) => ({ ...s, el: root.querySelector(`[data-stage="${s.id}"]`), btn: nav.querySelector(`[data-jump="${s.id}"]`), on: null }));

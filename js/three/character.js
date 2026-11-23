@@ -54,12 +54,12 @@ function faceTexture(img) {
   g.drawImage(img, 0, 0);
   // Ovale du visage seulement (sans les cheveux de l'image) : les cheveux 3D l'encadrent
   g.globalCompositeOperation = 'destination-in';
-  g.translate(c.width * 0.5, c.height * 0.55);
-  g.scale(1, (c.height * 0.46) / (c.width * 0.42));
-  const r = c.width * 0.42;
+  g.translate(c.width * 0.5, c.height * 0.52);
+  g.scale(1, (c.height * 0.52) / (c.width * 0.5));
+  const r = c.width * 0.5;
   const mask = g.createRadialGradient(0, 0, 0, 0, 0, r);
   mask.addColorStop(0, 'rgba(0,0,0,1)');
-  mask.addColorStop(0.86, 'rgba(0,0,0,1)');
+  mask.addColorStop(0.9, 'rgba(0,0,0,1)');
   mask.addColorStop(1, 'rgba(0,0,0,0)');
   g.fillStyle = mask;
   g.fillRect(-r, -r, r * 2, r * 2);
@@ -184,7 +184,8 @@ export function createCharacter() {
   const faceImg = new Image();
   faceImg.onload = () => {
     const face = new THREE.Mesh(
-      new THREE.SphereGeometry(HEAD_R * 1.01, 32, 24, Math.PI / 2 - 0.78, 1.56, 0.62, 1.95),
+      // couvre toute la face, du front au menton
+      new THREE.SphereGeometry(HEAD_R * 1.01, 32, 24, Math.PI / 2 - 0.95, 1.9, 0.5, 2.15),
       new THREE.MeshBasicMaterial({ map: faceTexture(faceImg), transparent: true })
     );
     face.scale.copy(skull.scale);

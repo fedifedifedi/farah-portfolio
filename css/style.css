@@ -306,7 +306,8 @@ body.is-classic .intro__status { display: none; }
 .stages button.is-active::after { width: 32px; background: var(--cream); }
 
 /* Superpositions HTML (textes longs) */
-.overlays { position: fixed; inset: 0; z-index: 10; pointer-events: none; }
+.overlays { position: fixed; inset: 0; z-index: 10; pointer-events: none; transition: opacity var(--dur); }
+body.detail-open .overlays, body.detail-open .stages { opacity: 0; pointer-events: none; } /* vue détaillée 3D ouverte */
 /* Panneau en verre dépoli : même style pour toutes les étapes du voyage */
 .overlay {
   position: absolute; left: var(--gutter); bottom: var(--gutter);
