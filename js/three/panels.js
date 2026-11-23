@@ -265,9 +265,9 @@ export function createPanels(path, world, { manager } = {}) {
       text(ctx, 'Projets', w / 2, h * 0.58, { font: `900 ${h * 0.42}px ${DISPLAY}`, color: CREAM });
       text(ctx, 'CLIQUEZ SUR UN CADRE POUR L’OUVRIR', w / 2, h * 0.82, { font: `700 ${h * 0.075}px ${SANS}`, color: PINK, spacing: 6 });
     });
-    const s = sProj0 - 8;
+    const s = sProj0 - 17; // bien avant la première affiche : un vrai espace entre le titre et les projets
     path.pointAt(s, title.position);
-    title.position.y += 4.4;
+    title.position.y += 4.8;
     faceBack(title, path, s, 16, 2);
     skyGroup.add(title);
     animated.push({ kind: 'float', obj: title, baseY: title.position.y, phase: 0 });

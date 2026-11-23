@@ -626,6 +626,15 @@ body.detail-open .overlays, body.detail-open .stages { opacity: 0; pointer-event
   .showcase__nav { justify-content: space-between; }
 }
 
+/* Variante « documents » du carrousel (certificats) : format paysage, document entier visible */
+.showcase--docs .showcase__stage { height: clamp(340px, 52vh, 520px); }
+.showcase--docs .showcase__item { width: clamp(260px, 34vw, 480px); margin-left: calc(clamp(260px, 34vw, 480px) / -2); aspect-ratio: 4 / 3; top: 8%; }
+.showcase--docs .showcase__poster { background: #fff; padding: 10px; }
+.showcase--docs .showcase__poster img, .showcase--docs .showcase__reflect img { object-fit: contain; }
+.showcase--docs .showcase__thumbs button { width: 58px; aspect-ratio: 4 / 3; background: #fff; }
+.showcase--docs .showcase__thumbs button img { object-fit: contain; }
+@media (max-width: 640px) { .showcase--docs .showcase__item { width: 78vw; margin-left: -39vw; } }
+
 /* Bandeau de compétences qui défile */
 .c-marquee { overflow: hidden; background: var(--rose); border-block: 1px solid rgba(43, 27, 61, .25); padding: var(--space-5) 0; }
 .c-marquee__track { display: flex; width: max-content; gap: var(--space-7); animation: marquee 40s linear infinite; }

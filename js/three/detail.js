@@ -62,6 +62,18 @@ function textTexture(p) {
   return tex;
 }
 
+function arrowTexture(label) {
+  const c = document.createElement('canvas');
+  c.width = c.height = 128;
+  const g = c.getContext('2d');
+  g.fillStyle = 'rgba(43, 27, 61, .85)'; g.beginPath(); g.arc(64, 64, 62, 0, Math.PI * 2); g.fill();
+  g.fillStyle = '#f3e3ec'; g.font = `600 70px ${SANS}`; g.textAlign = 'center'; g.textBaseline = 'middle';
+  g.fillText(label, 64, 60);
+  const tex = new THREE.CanvasTexture(c);
+  tex.colorSpace = THREE.SRGBColorSpace;
+  return tex;
+}
+
 function closeTexture() {
   const c = document.createElement('canvas');
   c.width = 320; c.height = 120;
@@ -94,15 +106,21 @@ export function createDetail(scene) {
   const close = mesh(new THREE.PlaneGeometry(0.8, 0.3), new THREE.MeshBasicMaterial({ map: closeTexture() }), 1003);
   close.position.set(2.65, 1.85, 0.01);
   close.userData.close = true;
+  const prev = mesh(new THREE.PlaneGeometry(0.42, 0.42), new THREE.MeshBasicMaterial({ map: arrowTexture('‹') }), 1004);
+  const next = mesh(new THREE.PlaneGeometry(0.42, 0.42), new THREE.MeshBasicMaterial({ map: arrowTexture('›') }), 1004);
+  prev.userData.step = -1;
+  next.userData.step = 1;
+  main.userData.step = 1; // un clic sur la grande image passe à la photo suivante
   const thumbs = new THREE.Group();
-  group.add(backdrop, mainFrame, main, info, close, thumbs);
+  group.add(backdrop, mainFrame, main, info, close, thumbs, prev, next);
   backdrop.position.z = -0.05;
 
   let current = -1;
   const dir = new THREE.Vector3();
   let images = [];
   let t0 = 0;
-  const clickables = [backdrop, close];
+  let shown = 0;
+  const clickables = [backdrop, close, main, prev, next];
 
   function setMain(src) {
     loader.load(src, (tex) => {
@@ -116,10 +134,13 @@ export function createDetail(scene) {
       if (w > 3.2) { w = 3.2; h = w / a; }
       main.scale.set(w, h, 1);
       main.position.set(-1.55, 0.35, 0.01);
+      prev.position.set(-1.55 - w / 2 - 0.3, 0.35, 0.02);
+      next.position.set(-1.55 + w / 2 + 0.3, 0.35, 0.02);
       mainFrame.scale.set(w + 0.08, h + 0.08, 1);
       mainFrame.position.set(-1.55, 0.35, 0);
     });
-    thumbs.children.forEach((t) => t.material.opacity = t.userData.src === src ? 1 : 0.55);
+    shown = Math.max(0, images.indexOf(src));
+    thumbs.children.forEach((t) => (t.material.opacity = t.userData.src === src ? 1 : 0.55));
   }
 
   function open(index, camera) {
@@ -133,7 +154,7 @@ export function createDetail(scene) {
 
     // Vignettes des autres photos, sous la grande image
     thumbs.clear();
-    clickables.length = 2;
+    clickables.length = 5;
     images.forEach((src, i) => {
       const m = mesh(new THREE.PlaneGeometry(0.62, 0.62), new THREE.MeshBasicMaterial({ color: DIM, opacity: 0.55 }), 1003);
       m.position.set(-1.55 - (images.length - 1) * 0.36 + i * 0.72, -1.55, 0.01);
@@ -142,7 +163,7 @@ export function createDetail(scene) {
       thumbs.add(m);
       clickables.push(m);
     });
-    thumbs.visible = images.length > 1;
+    thumbs.visible = prev.visible = next.visible = images.length > 1;
     setMain(images[0]);
 
     // Réduit si l'écran est étroit (téléphone)
@@ -155,7 +176,17 @@ export function createDetail(scene) {
 
   function close_() { group.visible = false; current = -1; document.body.classList.remove('detail-open'); }
 
-  addEventListener('keydown', (e) => { if (e.key === 'Escape' && group.visible) close_(); });
+  /** Photo précédente / suivante (boucle) */
+  function go(step) {
+    if (images.length > 1) setMain(images[(shown + step + images.length) % images.length]);
+  }
+
+  addEventListener('keydown', (e) => {
+    if (!group.visible) return;
+    if (e.key === 'Escape') close_();
+    else if (e.key === 'ArrowRight') go(1);
+    else if (e.key === 'ArrowLeft') go(-1);
+  });
 
   return {
     isOpen: () => group.visible,
@@ -166,6 +197,7 @@ export function createDetail(scene) {
     handle(obj) {
       if (!obj || obj.userData.close) close_();
       else if (obj.userData.src) setMain(obj.userData.src);
+      else if (obj.userData.step) go(obj.userData.step);
     },
     update(camera) {
       if (!group.visible) return;
@@ -177,8 +209,8 @@ export function createDetail(scene) {
       const k = Math.min(1, (performance.now() - t0) / 450);
       const e = 1 - Math.pow(1 - k, 3);
       group.scale.setScalar(group.userData.scale * (0.92 + 0.08 * e));
-      backdrop.material.opacity = 0.55 * e;
-      for (const m of [main, mainFrame, info, close]) m.material.opacity = e;
+      backdrop.material.opacity = 0.82 * e; // fond sombre : la fiche ressort bien
+      for (const m of [main, mainFrame, info, close, prev, next]) m.material.opacity = e;
     },
   };
 }

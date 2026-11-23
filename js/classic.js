@@ -24,12 +24,49 @@ export function timeline() {
     .join('')}</ul>`;
 }
 
+/** Carrousel 3D (js/showcase.js) : items = [{ titre, categorie, annee, image, objectif, outils }] */
+function showcaseHTML(id, items, { label, open, docs = false }) {
+  const n = String(items.length).padStart(2, '0');
+  return `
+    <div class="showcase${docs ? ' showcase--docs' : ''} reveal" id="${id}" role="region" aria-roledescription="carrousel" aria-label="${esc(label)}" tabindex="0">
+      <div class="showcase__stage">
+        ${items.map((p, i) => `
+        <button class="showcase__item" type="button" data-index="${i}" aria-label="${esc(p.titre)}">
+          <span class="showcase__poster"><img src="${esc(p.image)}" alt="" decoding="async" ${i > 2 ? 'loading="lazy"' : ''}></span>
+          <span class="showcase__reflect" aria-hidden="true"><img src="${esc(p.image)}" alt="" decoding="async" loading="lazy"></span>
+        </button>`).join('')}
+      </div>
+      <div class="c-wrap showcase__bottom">
+        <div class="showcase__info" aria-live="polite">
+          <p class="showcase__count"><span data-sc="num">01</span> <span>/ ${n}</span></p>
+          <p class="showcase__cat" data-sc="cat"></p>
+          <h3 class="showcase__title" data-sc="title"></h3>
+          <p class="showcase__text" data-sc="text"></p>
+          <ul class="tags" data-sc="tools"></ul>
+          <button class="btn btn--arrow" type="button" data-sc="open">${esc(open)}</button>
+        </div>
+        <div class="showcase__nav">
+          <button class="showcase__arrow" type="button" data-sc="prev" aria-label="Précédent">←</button>
+          <div class="showcase__thumbs" role="tablist" aria-label="Choisir">
+            ${items.map((p, i) => `<button type="button" role="tab" data-thumb="${i}" aria-label="${esc(p.titre)}"><img src="${esc(p.image)}" alt="" loading="lazy" decoding="async"></button>`).join('')}
+          </div>
+          <button class="showcase__arrow" type="button" data-sc="next" aria-label="Suivant">→</button>
+        </div>
+      </div>
+    </div>`;
+}
+
 let rendered = false;
 
 export function renderClassic() {
   if (rendered) return;
   rendered = true;
   const c = content;
+  // Les certificats, au format attendu par le carrousel
+  const certItems = (c.certificats || []).map((ct) => ({
+    titre: ct.titre, categorie: ct.emetteur, annee: ct.date, image: ct.image,
+    objectif: 'Attestation officielle. Cliquez sur « Voir le document » pour l’afficher en grand.', outils: [],
+  }));
   const root = document.getElementById('classic');
 
   root.innerHTML = `
@@ -57,36 +94,7 @@ export function renderClassic() {
       </div>
     </div>
     <!-- Vitrine 3D des projets (js/showcase.js) -->
-    <div class="showcase reveal" id="showcase" role="region" aria-roledescription="carrousel" aria-label="Projets de Farah" tabindex="0">
-      <div class="showcase__stage">
-        ${projects
-          .map(
-            (p, i) => `
-        <button class="showcase__item" type="button" data-index="${i}" aria-label="${esc(p.titre)}">
-          <span class="showcase__poster"><img src="${esc(p.image)}" alt="" decoding="async" ${i > 2 ? 'loading="lazy"' : ''}></span>
-          <span class="showcase__reflect" aria-hidden="true"><img src="${esc(p.image)}" alt="" decoding="async" loading="lazy"></span>
-        </button>`
-          )
-          .join('')}
-      </div>
-      <div class="c-wrap showcase__bottom">
-        <div class="showcase__info" aria-live="polite">
-          <p class="showcase__count"><span data-sc="num">01</span> <span>/ ${String(projects.length).padStart(2, '0')}</span></p>
-          <p class="showcase__cat" data-sc="cat"></p>
-          <h3 class="showcase__title" data-sc="title"></h3>
-          <p class="showcase__text" data-sc="text"></p>
-          <ul class="tags" data-sc="tools"></ul>
-          <button class="btn btn--arrow" type="button" data-sc="open">Voir le projet</button>
-        </div>
-        <div class="showcase__nav">
-          <button class="showcase__arrow" type="button" data-sc="prev" aria-label="Projet précédent">←</button>
-          <div class="showcase__thumbs" role="tablist" aria-label="Choisir un projet">
-            ${projects.map((p, i) => `<button type="button" role="tab" data-thumb="${i}" aria-label="${esc(p.titre)}"><img src="${esc(p.image)}" alt="" loading="lazy" decoding="async"></button>`).join('')}
-          </div>
-          <button class="showcase__arrow" type="button" data-sc="next" aria-label="Projet suivant">→</button>
-        </div>
-      </div>
-    </div>
+    ${showcaseHTML('showcase', projects, { label: 'Projets de Farah', open: 'Voir le projet' })}
   </section>
 
   <section class="c-section" id="c-apropos" aria-labelledby="c-apropos-title">
@@ -118,21 +126,11 @@ export function renderClassic() {
     <div class="c-wrap">
       <div class="c-section__head reveal">
         <h2 id="c-certificats-title">Certificats</h2>
-        <p>Attestations de stage, de workshop, de hackathon et de formation. Cliquez sur un document pour l’agrandir.</p>
-      </div>
-      <div class="c-certs">
-        ${(c.certificats || [])
-          .map(
-            (cert) => `
-        <a class="c-cert reveal" href="${esc(cert.image)}" target="_blank" rel="noopener">
-          <span class="c-cert__img"><img src="${esc(cert.image)}" alt="Attestation : ${esc(cert.titre)}" loading="lazy" decoding="async"></span>
-          <span class="c-cert__meta">${esc(cert.emetteur)} · ${esc(cert.date)}</span>
-          <span class="c-cert__title">${esc(cert.titre)}</span>
-        </a>`
-          )
-          .join('')}
+        <p>Attestations de stage, de workshop, de hackathon et de formation. Faites glisser les documents, puis ouvrez-en un pour l’agrandir.</p>
       </div>
     </div>
+    <!-- Vitrine 3D des certificats (même carrousel que les projets, au format document) -->
+    ${showcaseHTML('cert-showcase', certItems, { label: 'Certificats de Farah', open: 'Voir le document', docs: true })}
   </section>
 
   <section class="c-section c-cv" id="c-cv" aria-labelledby="c-cv-title">
@@ -159,6 +157,7 @@ export function renderClassic() {
   <footer class="c-footer"><div class="c-wrap">© ${new Date().getFullYear()} ${esc(c.nom)} · ${esc(c.contact.ville)}</div></footer>`;
 
   initShowcase(root.querySelector('#showcase'), projects, openProject);
+  initShowcase(root.querySelector('#cert-showcase'), certItems, (i) => open(certItems[i].image, '_blank', 'noopener'));
   root.querySelectorAll('[data-project]').forEach((btn) =>
     btn.addEventListener('click', () => openProject(Number(btn.dataset.project)))
   );
