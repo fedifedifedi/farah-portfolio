@@ -26,7 +26,7 @@ const tous = [
     outils: ['Photoshop', 'Direction artistique'],
   },
   {
-    titre: 'REAKTOR — Dualité',
+    titre: 'REAKTOR — Shooting photo',
     categorie: 'Photographie',
     annee: '',
     image: 'images/projets/reaktor-photo.jpg',
