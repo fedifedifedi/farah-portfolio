@@ -99,7 +99,7 @@ const tous = [
     titre: 'REAKTOR — Dualité',
     categorie: 'Campagne publicitaire',
     annee: '',
-    image: 'images/projets/reel-reaktor-rayon.jpg',
+    image: 'images/projets/reel-reaktor-billboard.jpg',
     galerie: ['images/projets/reaktor-moodboard.jpg', 'images/projets/reaktor-photo.jpg', 'images/projets/reaktor-packshot.jpg', 'images/projets/reaktor-carte-mentale.jpg'],
     contexte: 'Concept de campagne pour une boisson énergisante, REAKTOR, déclinée en deux produits : Dark Power et Focus Power.',
     objectif: 'Traduire l’idée de dualité « Force × Énergie » : deux facettes d’une même personnalité, mises en scène par le contraste rouge / bleu, du moodboard et de la carte mentale jusqu’au shooting photo.',
