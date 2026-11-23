@@ -53,7 +53,7 @@ function sign(width, height, draw, { transparent = true } = {}) {
   const h = Math.round((w * height) / width);
   const mesh = new THREE.Mesh(
     new THREE.PlaneGeometry(width, height),
-    new THREE.MeshBasicMaterial({ map: canvasTexture(w, h, draw), transparent, side: THREE.DoubleSide })
+    new THREE.MeshBasicMaterial({ map: canvasTexture(w, h, draw), color: '#e8e0e5', transparent, side: THREE.DoubleSide }) // teinte légère : le blanc ne déclenche pas la lueur
   );
   return mesh;
 }
@@ -201,9 +201,9 @@ export function createPanels(path, world, { manager } = {}) {
     const list = content.certificats || [];
     const certLoader = new THREE.TextureLoader(manager);
     const gold = new THREE.MeshStandardMaterial({ color: '#e7c27a', metalness: 0.75, roughness: 0.3, emissive: '#7a5520', emissiveIntensity: 0.15 });
-    const H = 1.55; // hauteur du document
+    const H = 1.8; // hauteur du document
     list.forEach((cert, i) => {
-      const s = world.sSkills - 14 + i * (28 / Math.max(1, list.length - 1));
+      const s = world.sSkills - 4 + i * 8; // après la porte de la médina, un tous les 8 m
       const holder = new THREE.Group();
       // Chevalet : deux pieds dorés
       for (const x of [-0.45, 0.45]) {
@@ -218,7 +218,7 @@ export function createPanels(path, world, { manager } = {}) {
       holder.add(board);
       const frame = new THREE.Mesh(new THREE.BoxGeometry(1, 1, 0.06), gold);
       frame.position.z = -0.04;
-      const imgMat = new THREE.MeshBasicMaterial({ color: '#ffffff' });
+      const imgMat = new THREE.MeshBasicMaterial({ color: '#e3dade' }); // papier blanc adouci : pas d'éblouissement
       const img = new THREE.Mesh(new THREE.PlaneGeometry(1, 1), imgMat);
       board.add(frame, img);
       const label = sign(2.2, 0.5, (ctx, w, h) => {
