@@ -582,7 +582,7 @@ body.is-classic .intro__status { display: none; }
 .showcase__bottom {
   display: grid; gap: var(--space-6); align-items: end; margin-top: var(--space-5);
 }
-@media (min-width: 960px) { .showcase__bottom { grid-template-columns: minmax(0, 1fr) auto; } }
+/* Navigation (flèches + vignettes) juste sous les affiches, centrée ; la fiche du projet en dessous */
 .showcase__info > * { opacity: 0; transform: translateY(12px); }
 .showcase__info.is-in > * { animation: info-in .7s var(--ease-out) forwards; }
 .showcase__info.is-in > :nth-child(2) { animation-delay: .05s; }
@@ -597,7 +597,7 @@ body.is-classic .intro__status { display: none; }
 .showcase__text { max-width: 56ch; margin: 0 0 var(--space-5); color: var(--ink-soft); line-height: 1.65; unicode-bidi: plaintext; }
 .showcase__info .tags { margin-bottom: var(--space-5); }
 
-.showcase__nav { display: flex; align-items: center; gap: var(--space-3); min-width: 0; }
+.showcase__nav { display: flex; align-items: center; justify-content: center; gap: var(--space-3); min-width: 0; order: -1; margin-top: calc(-1 * var(--space-5)); }
 .showcase__arrow {
   flex: none; display: grid; place-items: center; width: 48px; height: 48px; border-radius: 50%; cursor: pointer;
   border: 1.5px solid rgba(43, 27, 61, .25); background: transparent; color: var(--ink); font-size: 1.1rem;
