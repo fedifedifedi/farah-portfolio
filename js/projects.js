@@ -69,7 +69,7 @@ const tous = [
     titre: 'حياة ثانية — Titre de documentaire',
     categorie: 'Habillage audiovisuel',
     annee: '2026',
-    image: 'images/projets/reel-watania.jpg',
+    image: 'images/projets/reel-watania-tv.jpg',
     galerie: ['images/projets/hayat-thania.jpg'],
     contexte: 'Titre pour un documentaire de la Télévision Tunisienne (Al Watania), réalisé pendant le stage en montage.',
     objectif: '« Ḥayāt thāniya » (Une seconde vie) : un titre calligraphié en relief, éclairé par l’ombre des barreaux, qui évoque l’enfermement et l’espoir.',
