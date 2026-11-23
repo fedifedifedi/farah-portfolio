@@ -32,7 +32,7 @@ function showcaseHTML(id, items, { label, open, docs = false }) {
       <div class="showcase__stage">
         ${items.map((p, i) => `
         <button class="showcase__item" type="button" data-index="${i}" aria-label="${esc(p.titre)}">
-          <span class="showcase__poster"><img src="${esc(p.image)}" alt="" decoding="async" ${i > 2 ? 'loading="lazy"' : ''}></span>
+          <span class="showcase__poster"><img class="showcase__blur" src="${esc(p.image)}" alt="" aria-hidden="true" decoding="async" loading="lazy"><img class="showcase__img" src="${esc(p.image)}" alt="" decoding="async" ${i > 2 ? 'loading="lazy"' : ''}></span>
           <span class="showcase__reflect" aria-hidden="true"><img src="${esc(p.image)}" alt="" decoding="async" loading="lazy"></span>
         </button>`).join('')}
       </div>

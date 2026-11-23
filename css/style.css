@@ -557,6 +557,9 @@ body.detail-open .overlays, body.detail-open .stages { opacity: 0; pointer-event
   transition: box-shadow var(--dur) var(--ease-out);
 }
 .showcase__poster img { width: 100%; height: 100%; object-fit: cover; pointer-events: none; }
+/* Image entière, sans recadrage, sur un fond flou de la même image : propre quel que soit le format */
+.showcase__poster .showcase__blur { position: absolute; inset: -12%; width: 124%; height: 124%; filter: blur(22px) saturate(1.15) brightness(.92); }
+.showcase__poster .showcase__img { position: relative; object-fit: contain; filter: drop-shadow(0 10px 24px rgba(43, 27, 61, .28)); }
 /* Les affiches éloignées s'assombrissent légèrement (profondeur) */
 .showcase__poster::after {
   content: ''; position: absolute; inset: 0; pointer-events: none;
@@ -618,6 +621,7 @@ body.detail-open .overlays, body.detail-open .stages { opacity: 0; pointer-event
   transition: opacity var(--dur), outline-color var(--dur), transform var(--dur) var(--ease-out);
 }
 .showcase__thumbs button img { width: 100%; height: 100%; object-fit: cover; }
+.showcase__item { aspect-ratio: 4 / 3.4; } /* cadre un peu plus large : les mises en situation (paysage) respirent */
 .showcase__thumbs button:hover { opacity: .8; transform: translateY(-2px); }
 .showcase__thumbs button.is-active { opacity: 1; outline-color: var(--coral); }
 
@@ -634,6 +638,7 @@ body.detail-open .overlays, body.detail-open .stages { opacity: 0; pointer-event
 .showcase--docs .showcase__item.is-active .showcase__poster::before { content: 'Agrandir le document  ⤢'; }
 .showcase--docs .showcase__item:not(.is-active):hover .showcase__poster { box-shadow: 0 0 0 3px var(--rose), var(--shadow-m); }
 .showcase--docs .showcase__poster img, .showcase--docs .showcase__reflect img { object-fit: contain; }
+.showcase--docs .showcase__blur { display: none; }
 .showcase--docs .showcase__thumbs button { width: 58px; aspect-ratio: 4 / 3; background: #fff; }
 .showcase--docs .showcase__thumbs button img { object-fit: contain; }
 @media (max-width: 640px) { .showcase--docs .showcase__item { width: 78vw; margin-left: -39vw; } }
