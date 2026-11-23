@@ -56,6 +56,32 @@ function showcaseHTML(id, items, { label, open, docs = false }) {
     </div>`;
 }
 
+/** Visionneuse d'un certificat : le document en grand, et un lien vers l'original s'il existe */
+let docDialog = null;
+function openDocument(cert) {
+  if (!docDialog) {
+    docDialog = document.createElement('dialog');
+    docDialog.className = 'modal docview';
+    docDialog.setAttribute('aria-label', 'Certificat');
+    docDialog.innerHTML = `
+      <button class="modal__close" type="button" aria-label="Fermer">×</button>
+      <img class="docview__img" alt="">
+      <div class="docview__bar"><div><p class="modal__cat"></p><h2 class="docview__title"></h2></div>
+      <a class="btn btn--arrow docview__link" target="_blank" rel="noopener">Voir l’original</a></div>`;
+    document.body.append(docDialog);
+    docDialog.querySelector('.modal__close').addEventListener('click', () => docDialog.close());
+    docDialog.addEventListener('click', (e) => { if (e.target === docDialog) docDialog.close(); });
+  }
+  docDialog.querySelector('.docview__img').src = cert.image;
+  docDialog.querySelector('.docview__img').alt = 'Attestation : ' + cert.titre;
+  docDialog.querySelector('.modal__cat').textContent = `${cert.emetteur} · ${cert.date}`;
+  docDialog.querySelector('.docview__title').textContent = cert.titre;
+  const link = docDialog.querySelector('.docview__link');
+  link.hidden = !cert.original;
+  if (cert.original) link.href = cert.original;
+  docDialog.showModal();
+}
+
 let rendered = false;
 
 export function renderClassic() {
@@ -157,7 +183,7 @@ export function renderClassic() {
   <footer class="c-footer"><div class="c-wrap">© ${new Date().getFullYear()} ${esc(c.nom)} · ${esc(c.contact.ville)}</div></footer>`;
 
   initShowcase(root.querySelector('#showcase'), projects, openProject);
-  initShowcase(root.querySelector('#cert-showcase'), certItems, (i) => open(certItems[i].image, '_blank', 'noopener'));
+  initShowcase(root.querySelector('#cert-showcase'), certItems, (i) => openDocument(c.certificats[i]));
   root.querySelectorAll('[data-project]').forEach((btn) =>
     btn.addEventListener('click', () => openProject(Number(btn.dataset.project)))
   );

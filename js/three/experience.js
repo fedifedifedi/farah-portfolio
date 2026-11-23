@@ -7,6 +7,7 @@ import { createCharacter } from './character.js';
 import { createPanels } from './panels.js';
 import { createOverlays } from './overlays.js';
 import { createDetail } from './detail.js';
+import { content } from '../content.js';
 import { createGlitter } from './glitter.js';
 import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
 import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
@@ -193,7 +194,12 @@ export async function createExperience({ onProgress = () => {}, startAt = null }
       return;
     }
     const obj = pickObject(e.clientX, e.clientY);
-    if (obj?.userData.certUrl) open(obj.userData.certUrl, '_blank', 'noopener'); // certificat : ouvert en grand
+    const ct = content.certificats?.[obj?.userData.certIndex];
+    if (ct) { // certificat : ouvert dans la vue détaillée 3D
+      detail.open({ titre: ct.titre, categorie: ct.emetteur, annee: ct.date, image: ct.image, galerie: [], outils: [],
+        contexte: 'Attestation officielle délivrée à Farah Ben Ammar.', original: ct.original }, camera);
+      detailScroll = target;
+    }
     else if (obj && obj.userData.projectIndex >= 0) showProject(obj.userData.projectIndex);
   });
 

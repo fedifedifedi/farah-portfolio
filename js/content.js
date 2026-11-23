@@ -61,10 +61,11 @@ export const content = {
 
   // Attestations et certificats (section « Certificats » de la version classique).
   // Les données personnelles (n° de carte d'identité, date de naissance) sont masquées sur les images.
+  // original : lien vers le document d'origine (PDF, page de vérification), facultatif.
   certificats: [
-    { titre: 'Graphic Design Masterclass Intermediate', emetteur: 'Udemy · Lindsay Marsh', date: 'Novembre 2026', image: 'images/certificats/udemy-graphic-design.jpg' },
+    { titre: 'Graphic Design Masterclass Intermediate', emetteur: 'Udemy · Lindsay Marsh', date: 'Novembre 2026', image: 'images/certificats/udemy-graphic-design.jpg', original: 'https://ude.my/UC-4716a8b5-b859-4ce4-ad64-db8d5354f829' },
     { titre: 'Stage en montage', emetteur: 'Télévision Tunisienne', date: '15 juillet – 15 août 2026', image: 'images/certificats/stage-television-tunisienne.jpg' },
-    { titre: 'Workshop « Quelle sobriété numérique en 2050 ? »', emetteur: 'RAID 2026 · ESSTED', date: 'Avril 2026', image: 'images/certificats/raid-2026.jpg' },
+    { titre: 'Workshop « Quelle sobriété numérique en 2050 ? »', emetteur: 'RAID 2026 · ESSTED', date: 'Avril 2026', image: 'images/certificats/raid-2026.jpg', original: 'images/certificats/raid-2026.pdf' },
     { titre: 'Hackathon : refonte du logo et de la charte graphique', emetteur: 'Flexo Print · Rose Blanche Group', date: 'Février 2026', image: 'images/certificats/hackathon-flexo-print.jpg' },
   ],
 };

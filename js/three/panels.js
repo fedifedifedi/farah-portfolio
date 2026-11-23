@@ -247,7 +247,7 @@ export function createPanels(path, world, { manager } = {}) {
       path.pointAt(s, holder.position);
       holder.position.addScaledVector(path.sideAt(s), 4.2); // côté droit, face au mur des compétences
       faceBack(holder, path, s, 10, 0);
-      [frame, img, label].forEach((m) => (m.userData.certUrl = cert.image));
+      [frame, img, label].forEach((m) => (m.userData.certIndex = i));
       group.add(holder);
       certs.push(frame, img, label);
     });
@@ -408,7 +408,8 @@ export function createPanels(path, world, { manager } = {}) {
   }
 
   // ---------- Animation ----------
-  const clickables = [...frames.flatMap((f) => f.frame.children), ...certs];
+  // Seuls les maillages sont cliquables : les paillettes autour des affiches ne doivent pas intercepter le clic
+  const clickables = [...frames.flatMap((f) => [...f.poster.children, ...f.frame.children].filter((o) => o.isMesh && o.userData.projectIndex >= 0)), ...certs];
   return {
     group,
     clickables,

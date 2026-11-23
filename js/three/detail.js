@@ -38,6 +38,7 @@ function textTexture(p) {
   g.fillStyle = INK; g.font = `400 64px ${DISPLAY}`;
   for (const l of wrap(g, p.titre, W - pad * 2)) { g.fillText(l, pad, y); y += 74; }
   const block = (title, body) => {
+    if (!body) return;
     y += 36;
     g.fillStyle = '#7a6a86'; g.font = `700 26px ${SANS}`;
     g.fillText(title, pad, y);
@@ -69,6 +70,18 @@ function arrowTexture(label) {
   g.fillStyle = 'rgba(43, 27, 61, .85)'; g.beginPath(); g.arc(64, 64, 62, 0, Math.PI * 2); g.fill();
   g.fillStyle = '#f3e3ec'; g.font = `600 70px ${SANS}`; g.textAlign = 'center'; g.textBaseline = 'middle';
   g.fillText(label, 64, 60);
+  const tex = new THREE.CanvasTexture(c);
+  tex.colorSpace = THREE.SRGBColorSpace;
+  return tex;
+}
+
+function linkTexture() {
+  const c = document.createElement('canvas');
+  c.width = 520; c.height = 120;
+  const g = c.getContext('2d');
+  g.fillStyle = CORAL; g.beginPath(); g.roundRect(0, 0, 520, 120, 60); g.fill();
+  g.fillStyle = '#fbeef5'; g.font = `600 44px ${SANS}`; g.textAlign = 'center'; g.textBaseline = 'middle';
+  g.fillText('Voir l’original  ↗', 260, 62);
   const tex = new THREE.CanvasTexture(c);
   tex.colorSpace = THREE.SRGBColorSpace;
   return tex;
@@ -111,8 +124,10 @@ export function createDetail(scene) {
   prev.userData.step = -1;
   next.userData.step = 1;
   main.userData.step = 1; // un clic sur la grande image passe à la photo suivante
+  const link = mesh(new THREE.PlaneGeometry(1.3, 0.3), new THREE.MeshBasicMaterial({ map: linkTexture() }), 1003);
+  link.position.set(1.75, -1.55, 0.01);
   const thumbs = new THREE.Group();
-  group.add(backdrop, mainFrame, main, info, close, thumbs, prev, next);
+  group.add(backdrop, mainFrame, main, info, close, thumbs, prev, next, link);
   backdrop.position.z = -0.05;
 
   let current = -1;
@@ -120,7 +135,7 @@ export function createDetail(scene) {
   let images = [];
   let t0 = 0;
   let shown = 0;
-  const clickables = [backdrop, close, main, prev, next];
+  const clickables = [backdrop, close, main, prev, next, link];
 
   function setMain(src) {
     loader.load(src, (tex) => {
@@ -143,10 +158,13 @@ export function createDetail(scene) {
     thumbs.children.forEach((t) => (t.material.opacity = t.userData.src === src ? 1 : 0.55));
   }
 
-  function open(index, camera) {
-    const p = projects[index];
+  /** item : numéro de projet, ou objet { titre, categorie, annee, contexte, objectif, outils, image, galerie, original } */
+  function open(item, camera) {
+    const p = typeof item === 'number' ? projects[item] : item;
     if (!p) return;
-    current = index;
+    current = item;
+    link.visible = !!p.original;
+    link.userData.url = p.original;
     images = [p.image, ...(p.galerie || [])];
     info.material.map?.dispose?.();
     info.material.map = textTexture(p);
@@ -154,7 +172,7 @@ export function createDetail(scene) {
 
     // Vignettes des autres photos, sous la grande image
     thumbs.clear();
-    clickables.length = 5;
+    clickables.length = 6;
     images.forEach((src, i) => {
       const m = mesh(new THREE.PlaneGeometry(0.62, 0.62), new THREE.MeshBasicMaterial({ color: DIM, opacity: 0.55 }), 1003);
       m.position.set(-1.55 - (images.length - 1) * 0.36 + i * 0.72, -1.55, 0.01);
@@ -198,6 +216,7 @@ export function createDetail(scene) {
       if (!obj || obj.userData.close) close_();
       else if (obj.userData.src) setMain(obj.userData.src);
       else if (obj.userData.step) go(obj.userData.step);
+      else if (obj.userData.url) window.open(obj.userData.url, '_blank', 'noopener');
     },
     update(camera) {
       if (!group.visible) return;
@@ -210,7 +229,7 @@ export function createDetail(scene) {
       const e = 1 - Math.pow(1 - k, 3);
       group.scale.setScalar(group.userData.scale * (0.92 + 0.08 * e));
       backdrop.material.opacity = 0.82 * e; // fond sombre : la fiche ressort bien
-      for (const m of [main, mainFrame, info, close, prev, next]) m.material.opacity = e;
+      for (const m of [main, mainFrame, info, close, prev, next, link]) m.material.opacity = e;
     },
   };
 }
