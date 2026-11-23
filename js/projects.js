@@ -109,7 +109,7 @@ const tous = [
     titre: 'Couverture « The Trumpet of the Swan »',
     categorie: 'Édition & impression',
     annee: '2025',
-    image: 'images/projets/reel-livre-plante.jpg',
+    image: 'images/projets/reel-livre-duo.jpg',
     galerie: ['images/projets/couverture-trumpet-swan.jpg', 'images/projets/couverture-trumpet-swan-vernis.jpg'],
     contexte: 'Jury Techniques d’impression (PG2, ESSTED) : couverture souple du roman de E.B. White.',
     objectif: 'Format fini fermé 135 × 215 mm, dos carré de 10 mm, couché mat 350 g, avec la pose du vernis sélectif sur le titre et le cygne.',
