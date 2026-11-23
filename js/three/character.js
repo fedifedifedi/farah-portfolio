@@ -9,17 +9,18 @@ import { getDotTexture } from './utils.js';
 
 const FACE_URL = 'images/farah-visage.jpg';
 
-// Couleurs : change-les ici (tenue rose)
+// Couleurs : change-les ici (tenue chic : blazer rose, chemisier crème, pantalon large clair, escarpins nude, bijoux dorés)
 const C = {
-  skin: '#f8d7bd', hair: '#7a5640', hairLight: '#9c7354', jacket: '#f8c8dc', jacketDark: '#f2a9cb', // tenue toute rose : veste rose bébé
-  top: '#fff4fa', jeans: '#ee9fc6', shoes: '#ffffff', sole: '#f6d3e4', // pantalon rose, baskets blanches
+  skin: '#f8d7bd', hair: '#7a5640', hairLight: '#9c7354', jacket: '#f1aecb', jacketDark: '#e596bb',
+  top: '#fff6f0', jeans: '#f8e1ea', shoes: '#e9bfa8', sole: '#c98f78', gold: '#e2bc6e',
 };
 
 const mat = (color, roughness = 0.75) => new THREE.MeshStandardMaterial({ color, roughness, metalness: 0 });
 const M = {
   skin: new THREE.MeshBasicMaterial({ color: C.skin }), hair: mat(C.hair, 0.55), hairLight: mat(C.hairLight, 0.55),
-  jacket: mat(C.jacket, 0.85), jacketDark: mat(C.jacketDark, 0.85), top: mat(C.top),
-  jeans: mat(C.jeans, 0.85), shoes: mat(C.shoes, 0.5), sole: mat(C.sole),
+  jacket: mat(C.jacket, 0.5), jacketDark: mat(C.jacketDark, 0.45), top: mat(C.top, 0.4),
+  jeans: mat(C.jeans, 0.7), shoes: mat(C.shoes, 0.35), sole: mat(C.sole, 0.5),
+  gold: new THREE.MeshStandardMaterial({ color: C.gold, metalness: 0.8, roughness: 0.28 }),
 };
 
 /** Segment de membre : capsule qui pend sous son articulation (le pivot est l'articulation) */
@@ -88,18 +89,20 @@ export function createCharacter() {
 
   // ---------- Jambes ----------
   const legs = [1, -1].map((side) => { // side 1 = gauche (+X), -1 = droite
-    const thigh = segment(0.42, 0.075, 0.052, M.jeans);
+    // Pantalon large taille haute : la jambe s'évase vers le bas
+    const thigh = segment(0.42, 0.078, 0.062, M.jeans);
     thigh.position.set(side * 0.085, -0.02, 0);
-    const shin = segment(0.41, 0.05, 0.034, M.jeans);
+    const shin = segment(0.41, 0.062, 0.072, M.jeans);
     shin.position.y = -0.44;
     const ankle = new THREE.Group();
     ankle.position.y = -0.43;
-    const shoe = new THREE.Mesh(new THREE.CapsuleGeometry(0.042, 0.13, 4, 10).rotateX(Math.PI / 2), M.shoes);
-    shoe.position.set(0, -0.035, 0.05);
-    shoe.scale.set(1, 0.75, 1);
-    const sole = new THREE.Mesh(new THREE.BoxGeometry(0.085, 0.018, 0.22), M.sole);
-    sole.position.set(0, -0.065, 0.05);
-    ankle.add(shoe, sole);
+    // Escarpin pointu nude avec talon fin
+    const shoe = new THREE.Mesh(new THREE.ConeGeometry(0.036, 0.2, 10).rotateX(Math.PI / 2), M.shoes);
+    shoe.position.set(0, -0.045, 0.07);
+    shoe.scale.set(1, 0.55, 1);
+    const heel = new THREE.Mesh(new THREE.CylinderGeometry(0.008, 0.012, 0.07, 6), M.sole);
+    heel.position.set(0, -0.06, -0.03);
+    ankle.add(shoe, heel);
     shin.add(ankle);
     thigh.add(shin);
     pelvis.add(thigh);
@@ -123,6 +126,25 @@ export function createCharacter() {
   const top = new THREE.Mesh(new THREE.ShapeGeometry(vShape), new THREE.MeshBasicMaterial({ color: C.top, side: THREE.DoubleSide }));
   top.position.z = 0.128;
   spine.add(top);
+  // Revers du blazer : deux bandes de satin le long du décolleté
+  for (const side of [1, -1]) {
+    const lapel = new THREE.Shape();
+    lapel.moveTo(side * 0.07, 0.53).lineTo(side * 0.1, 0.5).lineTo(side * 0.022, 0.33).lineTo(0, 0.36).lineTo(side * 0.07, 0.53);
+    const m = new THREE.Mesh(new THREE.ShapeGeometry(lapel), new THREE.MeshStandardMaterial({ color: C.jacketDark, roughness: 0.3, side: THREE.DoubleSide }));
+    m.position.z = 0.13;
+    spine.add(m);
+  }
+  // Ceinture fine dorée à la taille, et petit collier doré
+  const belt = new THREE.Mesh(new THREE.TorusGeometry(0.115, 0.009, 6, 32).rotateX(Math.PI / 2), M.gold);
+  belt.scale.set(1.18, 1, 0.8);
+  belt.position.y = 0.16;
+  spine.add(belt);
+  const buckle = new THREE.Mesh(new THREE.BoxGeometry(0.03, 0.022, 0.008), M.gold);
+  buckle.position.set(0, 0.16, 0.093);
+  spine.add(buckle);
+  const pendant = new THREE.Mesh(new THREE.SphereGeometry(0.011, 10, 8), M.gold);
+  pendant.position.set(0, 0.47, 0.132);
+  spine.add(pendant);
 
   // ---------- Bras ----------
   const arms = [1, -1].map((side) => {
@@ -151,7 +173,7 @@ export function createCharacter() {
   spine.add(neck);
   const head = new THREE.Group();
   head.position.y = 0.6;
-  head.scale.setScalar(1.3); // tête un peu plus grande : on reconnaît mieux le visage de Farah
+  head.scale.setScalar(1.15); // proportions proches du réel, tête juste un peu agrandie pour bien voir le visage
   spine.add(head);
   const HEAD_R = 0.112;
   const skull = new THREE.Mesh(new THREE.SphereGeometry(HEAD_R, 28, 20), new THREE.MeshBasicMaterial({ color: C.skin }));

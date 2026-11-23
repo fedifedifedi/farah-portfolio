@@ -15,14 +15,15 @@ export const content = {
     intro:
       'Étudiante en 3e année de licence Design Image, spécialité Publicité graphique, à l’ESSTED Manouba. ' +
       'J’aime construire une idée forte puis la décliner : affiche, campagne, identité visuelle ou édition.',
+    // court : libellé affiché sur le panneau 3D (facultatif)
     parcours: [
-      { annee: '2025 – 2027', titre: 'Licence Design Image, spécialité Publicité graphique', lieu: 'ESSTED Manouba · 2e et 3e année' },
-      { annee: '2026', titre: 'Graphic Design Masterclass Intermediate', lieu: 'Certificat Udemy · Lindsay Marsh · 19,5 h · novembre' },
-      { annee: '2026', titre: 'Stage en montage', lieu: 'Télévision Tunisienne · 15 juillet – 15 août' },
-      { annee: '2026', titre: 'Workshop « Quelle sobriété numérique en 2050 ? »', lieu: 'RAID 2026 · ESSTED, avril' },
-      { annee: '2026', titre: 'Hackathon Flexo Print (Rose Blanche Group)', lieu: 'Refonte du logo et de la charte graphique · février' },
-      { annee: '2024 – 2025', titre: 'Licence Design Image, 1re année', lieu: 'ISAM Mahdia' },
-      { annee: '2024', titre: 'Baccalauréat Lettres', lieu: '' },
+      { annee: '2025 – 2027', titre: 'Licence Design Image, spécialité Publicité graphique', lieu: 'ESSTED Manouba · 2e et 3e année', court: 'Licence · ESSTED Manouba' },
+      { annee: '2026', titre: 'Graphic Design Masterclass Intermediate', lieu: 'Certificat Udemy · Lindsay Marsh · 19,5 h · novembre', court: 'Certificat Udemy' },
+      { annee: '2026', titre: 'Stage en montage', lieu: 'Télévision Tunisienne · 15 juillet – 15 août', court: 'Stage · Télévision Tunisienne' },
+      { annee: '2026', titre: 'Workshop « Quelle sobriété numérique en 2050 ? »', lieu: 'RAID 2026 · ESSTED, avril', court: 'Workshop · RAID 2026' },
+      { annee: '2026', titre: 'Hackathon Flexo Print (Rose Blanche Group)', lieu: 'Refonte du logo et de la charte graphique · février', court: 'Hackathon · Flexo Print' },
+      { annee: '2024 – 2025', titre: 'Licence Design Image, 1re année', lieu: 'ISAM Mahdia', court: '1re année · ISAM Mahdia' },
+      { annee: '2024', titre: 'Baccalauréat Lettres', lieu: '', court: 'Bac Lettres' },
     ],
     approche:
       'Je pars toujours du message : qui doit le voir, et que doit-il ressentir ? ' +

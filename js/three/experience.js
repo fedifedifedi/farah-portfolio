@@ -165,11 +165,14 @@ export async function createExperience({ onProgress = () => {}, startAt = null }
   const pointer = new THREE.Vector2();
   let hovered = -1;
   let pointerActive = false;
-  function pick(clientX, clientY) {
+  function pickObject(clientX, clientY) {
     pointer.set((clientX / innerWidth) * 2 - 1, -(clientY / innerHeight) * 2 + 1);
     raycaster.setFromCamera(pointer, camera);
     const hit = raycaster.intersectObjects(panels.clickables, false)[0];
-    return hit && hit.distance < 60 ? hit.object.userData.projectIndex : -1;
+    return hit && hit.distance < 60 ? hit.object : null;
+  }
+  function pick(clientX, clientY) {
+    return pickObject(clientX, clientY)?.userData.projectIndex ?? -1;
   }
   addEventListener('pointermove', (e) => {
     if (e.pointerType !== 'mouse') return;
@@ -178,8 +181,9 @@ export async function createExperience({ onProgress = () => {}, startAt = null }
     pointer.cy = e.clientY;
   });
   canvas.addEventListener('click', (e) => {
-    const i = pick(e.clientX, e.clientY);
-    if (i >= 0) openProject(i);
+    const obj = pickObject(e.clientX, e.clientY);
+    if (obj?.userData.certUrl) open(obj.userData.certUrl, '_blank', 'noopener'); // certificat : ouvert en grand
+    else if (obj && obj.userData.projectIndex >= 0) openProject(obj.userData.projectIndex);
   });
 
   // ---------- Caméra ----------
@@ -240,7 +244,7 @@ export async function createExperience({ onProgress = () => {}, startAt = null }
     if (bloom) {
       // Dans le ciel très clair, on réduit la lueur pour que les affiches restent nettes
       bloom.strength = 0.55 - mood * 0.4;
-      bloom.threshold = 0.8 + mood * 0.17;
+      bloom.threshold = 0.93 + mood * 0.05; // seuls les éléments très lumineux rayonnent : les textes restent nets
     }
 
     world.update(t, camera);

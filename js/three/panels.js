@@ -108,23 +108,29 @@ export function createPanels(path, world, { manager } = {}) {
   // ============ 2. À propos : panneau sur pied au bord de la rue ============
   {
     const s = sOf('apropos');
-    const about = sign(5.4, 3.6, (ctx, w, h) => {
+    const LIGHT = '#efe0e9'; // texte clair, juste sous le seuil de lueur : reste net
+    const about = sign(5.4, 4.6, (ctx, w, h) => {
       roundRect(ctx, 0, 0, w, h, 40);
       ctx.fillStyle = INK;
       ctx.fill();
       const pad = w * 0.08;
-      text(ctx, 'À PROPOS', pad, h * 0.17, { font: `700 ${h * 0.06}px ${SANS}`, color: PINK, align: 'left', spacing: 8 });
-      text(ctx, 'Design Image', pad, h * 0.34, { font: `900 ${h * 0.13}px ${DISPLAY}`, color: CREAM, align: 'left' });
-      text(ctx, 'spécialité Publicité graphique', pad, h * 0.45, { font: `italic 400 ${h * 0.075}px ${DISPLAY}`, color: CREAM, align: 'left' });
-      content.apropos.parcours.forEach((e, i) => {
-        const y = h * (0.6 + i * 0.1);
-        const label = e.lieu ? e.lieu.split(' · ')[0] : e.titre;
-        text(ctx, e.annee, pad, y, { font: `700 ${h * 0.05}px ${SANS}`, color: CORAL, align: 'left' });
-        text(ctx, label, pad + w * 0.3, y, { font: `500 ${h * 0.055}px ${SANS}`, color: CREAM, align: 'left', maxWidth: w * 0.6 });
+      text(ctx, 'À PROPOS', pad, h * 0.12, { font: `700 ${h * 0.045}px ${SANS}`, color: PINK, align: 'left', spacing: 8 });
+      text(ctx, 'Design Image', pad, h * 0.25, { font: `900 ${h * 0.1}px ${DISPLAY}`, color: LIGHT, align: 'left' });
+      text(ctx, 'spécialité Publicité graphique', pad, h * 0.33, { font: `italic 400 ${h * 0.058}px ${DISPLAY}`, color: LIGHT, align: 'left' });
+      // Les lignes du parcours se répartissent dans l'espace disponible, quel que soit leur nombre
+      const list = content.apropos.parcours;
+      const top = 0.44, bottom = 0.93;
+      const step = (bottom - top) / Math.max(1, list.length - 1);
+      const size = Math.min(0.05, step * 0.62);
+      list.forEach((e, i) => {
+        const y = h * (top + i * step);
+        const label = e.court || (e.lieu ? e.lieu.split(' · ')[0] : e.titre);
+        text(ctx, e.annee, pad, y, { font: `700 ${h * size * 0.9}px ${SANS}`, color: CORAL, align: 'left', maxWidth: w * 0.26 });
+        text(ctx, label, pad + w * 0.3, y, { font: `500 ${h * size}px ${SANS}`, color: LIGHT, align: 'left', maxWidth: w * 0.62 });
       });
     });
     const holder = new THREE.Group();
-    about.position.y = 3.2;
+    about.position.y = 3.7;
     holder.add(about, posts(5.4, 1.5));
     path.pointAt(s + 2, holder.position);
     holder.position.add(path.sideAt(s + 2).multiplyScalar(5.6));
@@ -186,6 +192,64 @@ export function createPanels(path, world, { manager } = {}) {
       mesh.rotation.y = Math.atan2(t.x, t.z) - Math.PI / 2 - 0.55;
       group.add(mesh);
       animated.push({ kind: 'word', mesh, s, baseY });
+    });
+  }
+
+  // ============ 3 bis. Certificats : chevalets dorés en face du mur des compétences ============
+  const certs = [];
+  {
+    const list = content.certificats || [];
+    const certLoader = new THREE.TextureLoader(manager);
+    const gold = new THREE.MeshStandardMaterial({ color: '#e7c27a', metalness: 0.75, roughness: 0.3, emissive: '#7a5520', emissiveIntensity: 0.15 });
+    const H = 1.55; // hauteur du document
+    list.forEach((cert, i) => {
+      const s = world.sSkills - 14 + i * (28 / Math.max(1, list.length - 1));
+      const holder = new THREE.Group();
+      // Chevalet : deux pieds dorés
+      for (const x of [-0.45, 0.45]) {
+        const leg = new THREE.Mesh(new THREE.CylinderGeometry(0.025, 0.03, 2.2, 6), gold);
+        leg.position.set(x, 1.05, -0.12);
+        leg.rotation.x = -0.12;
+        holder.add(leg);
+      }
+      const board = new THREE.Group();
+      board.position.y = 2.05;
+      board.rotation.x = -0.1;
+      holder.add(board);
+      const frame = new THREE.Mesh(new THREE.BoxGeometry(1, 1, 0.06), gold);
+      frame.position.z = -0.04;
+      const imgMat = new THREE.MeshBasicMaterial({ color: '#ffffff' });
+      const img = new THREE.Mesh(new THREE.PlaneGeometry(1, 1), imgMat);
+      board.add(frame, img);
+      const label = sign(2.2, 0.5, (ctx, w, h) => {
+        roundRect(ctx, 0, 0, w, h, 18);
+        ctx.fillStyle = '#eddbe5'; // un peu moins clair que la crème : pas d'effet de lueur
+        ctx.fill();
+        text(ctx, 'CERTIFICAT · ' + cert.date.toUpperCase(), w / 2, h * 0.36, { font: `700 ${h * 0.17}px ${SANS}`, color: CORAL, spacing: 3, maxWidth: w * 0.9 });
+        text(ctx, cert.titre, w / 2, h * 0.76, { font: `700 ${h * 0.25}px ${DISPLAY}`, color: INK, maxWidth: w * 0.92 });
+      });
+      board.add(label);
+      const setAspect = (a) => {
+        const W = H * a;
+        img.scale.set(W, H, 1);
+        frame.scale.set(W + 0.12, H + 0.12, 1);
+        label.position.y = -H / 2 - 0.35;
+      };
+      setAspect(4 / 3);
+      certLoader.load(cert.image, (tex) => {
+        tex.colorSpace = THREE.SRGBColorSpace;
+        tex.anisotropy = 8;
+        imgMat.map = tex;
+        imgMat.needsUpdate = true;
+        const im = tex.image;
+        if (im?.width) setAspect(THREE.MathUtils.clamp(im.width / im.height, 0.6, 1.6));
+      });
+      path.pointAt(s, holder.position);
+      holder.position.addScaledVector(path.sideAt(s), 4.2); // côté droit, face au mur des compétences
+      faceBack(holder, path, s, 10, 0);
+      [frame, img, label].forEach((m) => (m.userData.certUrl = cert.image));
+      group.add(holder);
+      certs.push(frame, img, label);
     });
   }
 
@@ -344,7 +408,7 @@ export function createPanels(path, world, { manager } = {}) {
   }
 
   // ---------- Animation ----------
-  const clickables = frames.flatMap((f) => f.frame.children);
+  const clickables = [...frames.flatMap((f) => f.frame.children), ...certs];
   return {
     group,
     clickables,
