@@ -17,13 +17,13 @@
 const tous = [
   {
     titre: 'REAKTOR — Dualité',
-    categorie: 'Campagne publicitaire',
+    categorie: 'Photographie',
     annee: '',
-    image: 'images/projets/reel-reaktor-billboard.jpg',
-    galerie: ['images/projets/reaktor-moodboard.jpg', 'images/projets/reaktor-photo.jpg', 'images/projets/reaktor-packshot.jpg', 'images/projets/reaktor-carte-mentale.jpg'],
-    contexte: 'Concept de campagne pour une boisson énergisante, REAKTOR, déclinée en deux produits : Dark Power et Focus Power.',
-    objectif: 'Traduire l’idée de dualité « Force × Énergie » : deux facettes d’une même personnalité, mises en scène par le contraste rouge / bleu, du moodboard et de la carte mentale jusqu’au shooting photo.',
-    outils: ['Photoshop', 'Direction artistique', 'Photographie'],
+    image: 'images/projets/reaktor-photo.jpg',
+    galerie: [],
+    contexte: 'Shooting photo pour la campagne de la boisson énergisante REAKTOR (Dark Power et Focus Power).',
+    objectif: 'Incarner la dualité « Force × Énergie » : lumière rouge et bleue, regard affirmé et bouteille Dark Power mise en avant par le modèle.',
+    outils: ['Photographie', 'Direction artistique', 'Photoshop'],
   },
   {
     titre: 'Charte graphique — FARAH, cosmétiques',
