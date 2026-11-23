@@ -129,7 +129,7 @@ const tous = [
     titre: 'Vita Boost — Interface web',
     categorie: 'Web design · Interface',
     annee: '',
-    image: 'images/projets/reel-vita-laptop.jpg',
+    image: 'images/projets/reel-vita-bureau.jpg',
     galerie: ['images/projets/vita-boost.jpg'],
     contexte: 'Projet d’infographie (DS2) : interface d’un site web pour une boisson énergisante naturelle.',
     objectif: 'Concevoir la page d’accueil du site : la canette « Lemon Mint » au centre, un menu clair, un appel à l’action et un message fort (« Énergie naturelle, boost garanti ! ») et des arguments forts : 100 % bio, 0 sucre ajouté.',
