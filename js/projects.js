@@ -26,6 +26,16 @@ const tous = [
     outils: ['Photoshop', 'Direction artistique', 'Photographie'],
   },
   {
+    titre: 'Charte graphique — FARAH, cosmétiques',
+    categorie: 'Identité visuelle',
+    annee: '',
+    image: 'images/projets/charte-farah-mockups.jpg',
+    galerie: ['images/projets/charte-farah-couverture.jpg', 'images/projets/charte-farah-essence.jpg', 'images/projets/charte-farah-logo.jpg', 'images/projets/charte-farah-declinaisons.jpg', 'images/projets/charte-farah-usages.jpg', 'images/projets/charte-farah-couleurs.jpg', 'images/projets/charte-farah-typographie.jpg', 'images/projets/charte-farah-monochrome.jpg'],
+    contexte: 'Projet d’infographie (DS) : identité complète d’une marque de cosmétiques bio et naturels inspirée de l’artisanat méditerranéen, « FARAH » (la joie, en arabe).',
+    objectif: 'Construire toute la charte : logo calligraphique latin et arabe, zone de sécurité et taille minimale, déclinaisons et usages interdits, palette sable / olive / terracotta, typographies, version monochrome et mise en situation sur les produits.',
+    outils: ['Illustrator', 'Photoshop', 'InDesign'],
+  },
+  {
     titre: 'Journées Théâtrales de Carthage',
     categorie: 'Affiche culturelle',
     annee: '',
