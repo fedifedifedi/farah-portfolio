@@ -17,6 +17,8 @@ function render(index) {
       img.src = src;
       img.alt = i === 0 ? p.titre : `${p.titre} — visuel ${i + 1}`;
       img.decoding = 'async';
+      img.title = 'Cliquer pour ouvrir l’image seule';
+      img.addEventListener('click', () => window.open(src, '_blank', 'noopener')); // l'image s'ouvre seule
       return img;
     })
   );

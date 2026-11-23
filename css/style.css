@@ -405,7 +405,7 @@ body.detail-open .overlays, body.detail-open .stages { opacity: 0; pointer-event
 @keyframes fade-in { from { opacity: 0; } }
 .modal__inner { display: grid; grid-template-columns: 1fr; max-height: calc(100vh - 32px); overflow: auto; }
 .modal__media { background: var(--rose-soft); display: grid; gap: 2px; }
-.modal__media img { width: 100%; height: auto; }
+.modal__media img { width: 100%; height: auto; cursor: zoom-in; }
 .modal__text { padding: var(--space-6) var(--space-5) var(--space-7); }
 .modal__text h3 { font: 600 var(--step--1)/1 var(--font-body); letter-spacing: .22em; text-transform: uppercase; color: var(--ink-soft); margin: var(--space-6) 0 var(--space-3); padding-top: var(--space-5); border-top: 1px solid var(--line); }
 .modal__text p { margin: 0; line-height: 1.7; }
