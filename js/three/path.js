@@ -22,9 +22,20 @@ const POINTS = [
   v(6, 52, -202),
   v(0, 54, -224),  // projets
   v(-6, 54, -246),
-  v(0, 54, -268),
-  v(4, 54, -290),
-  v(0, 54, -310),  // contact
+  v(0, 54, -270),
+  v(5, 54, -294),
+  v(0, 54, -318),
+  v(-5, 54, -342),
+  v(0, 54, -366),
+  v(6, 54, -390),
+  v(0, 54, -414),
+  v(-6, 54, -438),
+  v(0, 54, -462),
+  v(5, 54, -486),
+  v(0, 54, -510),
+  v(-4, 54, -534),
+  v(0, 54, -558),
+  v(0, 54, -582),  // contact (la galerie des projets est longue : un projet tous les ~30 m)
 ];
 
 // Repères des étapes (positions dans le monde) : servent au menu et aux textes HTML
@@ -34,7 +45,7 @@ export const STAGE_MARKERS = {
   competences: v(0, 0, -88),
   ciel: v(-2, 32, -166),
   projets: v(0, 54, -224),
-  contact: v(0, 54, -310),
+  contact: v(0, 54, -582),
 };
 
 export const GROUND_END_Z = -128; // au-delà : la mer

@@ -295,7 +295,7 @@ export function createPanels(path, world, { manager } = {}) {
   const glowMat = (color, opacity) => new THREE.MeshBasicMaterial({ color, map: glowTex, transparent: true, opacity, depthWrite: false, blending: THREE.AdditiveBlending });
   projects.forEach((proj, i) => {
     // Un projet tous les 24 m environ (resserré si la liste est longue)
-    const gap = projects.length > 1 ? Math.min(24, (sProj1 - sProj0) / (projects.length - 1)) : 0;
+    const gap = projects.length > 1 ? Math.min(32, (sProj1 - sProj0) / (projects.length - 1)) : 0;
     const s = sProj0 + gap * i;
     const side = i % 2 ? -1 : 1;
     const H = 4.6; // grandes affiches : ce sont les vraies stars du portfolio
@@ -370,9 +370,9 @@ export function createPanels(path, world, { manager } = {}) {
       neon[1].scale.set(W + 0.3, t, 1); neon[1].position.set(0, -H / 2 - 0.13, 0.01);
       neon[2].scale.set(t, H + 0.3, 1); neon[2].position.set(-W / 2 - 0.13, 0, 0.01);
       neon[3].scale.set(t, H + 0.3, 1); neon[3].position.set(W / 2 + 0.13, 0, 0.01);
-      base.position.y = -H / 2 - 1.9; // sous l'étiquette, sans la couper
+      base.position.y = -H / 2 - 2.3; // bien sous l'étiquette
       base.scale.setScalar(Math.max(0.85, W / 3.4));
-      label.position.y = -H / 2 - 0.72;
+      label.position.y = -H / 2 - 0.95; // l'étiquette ne recouvre plus le bas de l'image
     };
     setAspect(0.75);
 

@@ -26,19 +26,19 @@ export function createClouds(path, { quality = 1 } = {}) {
   };
 
   // Mer de nuages, que l'on traverse pendant la montée
-  const floorCount = Math.round(70 * quality);
+  const floorCount = Math.round(110 * quality);
   for (let i = 0; i < floorCount; i++) {
     const x = -110 + rand() * 220;
-    const z = -150 - rand() * 240;
+    const z = -150 - rand() * 460;
     const y = 30 + rand() * 6;
     const size = 4 + rand() * 6;
     if (!tooClose(x, y, z, size)) cloud(x, y, z, size);
   }
   // Nuages flottants autour du chemin des projets
-  const skyCount = Math.round(40 * quality);
+  const skyCount = Math.round(70 * quality);
   for (let i = 0; i < skyCount; i++) {
     const x = (rand() < 0.5 ? -1 : 1) * (12 + rand() * 60);
-    const z = -170 - rand() * 200;
+    const z = -170 - rand() * 420;
     const y = 46 + rand() * 30;
     const size = 2 + rand() * 4;
     if (!tooClose(x, y, z, size)) cloud(x, y, z, size);
@@ -67,7 +67,7 @@ export function createClouds(path, { quality = 1 } = {}) {
   for (let i = 0; i < count; i++) {
     pos[i * 3] = -50 + rand() * 100;
     pos[i * 3 + 1] = 36 + rand() * 40;
-    pos[i * 3 + 2] = -150 - rand() * 200;
+    pos[i * 3 + 2] = -150 - rand() * 420;
   }
   const sparkGeo = new THREE.BufferGeometry();
   sparkGeo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
