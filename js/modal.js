@@ -12,7 +12,7 @@ function render(index) {
 
   const media = $('modal-media');
   media.replaceChildren(
-    ...[p.image, ...(p.galerie || [])].map((src, i) => {
+    ...(/(mockup|reel)-/.test(p.image) ? [...(p.galerie || []), p.image] : [p.image, ...(p.galerie || [])]).map((src, i) => {
       const img = document.createElement('img');
       img.src = src;
       img.alt = i === 0 ? p.titre : `${p.titre} — visuel ${i + 1}`;

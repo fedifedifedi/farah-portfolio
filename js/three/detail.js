@@ -165,7 +165,8 @@ export function createDetail(scene) {
     current = item;
     link.visible = !!p.original;
     link.userData.url = p.original;
-    images = [p.image, ...(p.galerie || [])];
+    // visuel final d'abord, la mise en situation principale ensuite
+    images = /(mockup|reel)-/.test(p.image) ? [...(p.galerie || []), p.image] : [p.image, ...(p.galerie || [])];
     info.material.map?.dispose?.();
     info.material.map = textTexture(p);
     info.material.needsUpdate = true;
