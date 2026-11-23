@@ -16,6 +16,16 @@
 
 const tous = [
   {
+    titre: 'REAKTOR — Dualité',
+    categorie: 'Campagne publicitaire',
+    annee: '',
+    image: 'images/projets/reel-reaktor-billboard.jpg',
+    galerie: ['images/projets/reaktor-moodboard.jpg', 'images/projets/reaktor-photo.jpg', 'images/projets/reaktor-packshot.jpg', 'images/projets/reaktor-carte-mentale.jpg'],
+    contexte: 'Concept de campagne pour une boisson énergisante, REAKTOR, déclinée en deux produits : Dark Power et Focus Power.',
+    objectif: 'Traduire l’idée de dualité « Force × Énergie » : deux facettes d’une même personnalité, mises en scène par le contraste rouge / bleu, du moodboard et de la carte mentale jusqu’au shooting photo.',
+    outils: ['Photoshop', 'Direction artistique', 'Photographie'],
+  },
+  {
     titre: 'Journées Théâtrales de Carthage',
     categorie: 'Affiche culturelle',
     annee: '',
@@ -94,16 +104,6 @@ const tous = [
     contexte: 'Jury Techniques d’impression (PG2, ESSTED) : couverture souple du roman de E.B. White.',
     objectif: 'Format fini fermé 135 × 215 mm, dos carré de 10 mm, couché mat 350 g, avec la pose du vernis sélectif sur le titre et le cygne.',
     outils: ['InDesign', 'Illustrator'],
-  },
-  {
-    titre: 'REAKTOR — Dualité',
-    categorie: 'Campagne publicitaire',
-    annee: '',
-    image: 'images/projets/reel-reaktor-billboard.jpg',
-    galerie: ['images/projets/reaktor-moodboard.jpg', 'images/projets/reaktor-photo.jpg', 'images/projets/reaktor-packshot.jpg', 'images/projets/reaktor-carte-mentale.jpg'],
-    contexte: 'Concept de campagne pour une boisson énergisante, REAKTOR, déclinée en deux produits : Dark Power et Focus Power.',
-    objectif: 'Traduire l’idée de dualité « Force × Énergie » : deux facettes d’une même personnalité, mises en scène par le contraste rouge / bleu, du moodboard et de la carte mentale jusqu’au shooting photo.',
-    outils: ['Photoshop', 'Direction artistique', 'Photographie'],
   },
   {
     titre: 'Tunisia Animation Cinema Days',
