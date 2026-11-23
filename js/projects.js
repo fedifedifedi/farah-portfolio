@@ -89,7 +89,7 @@ const tous = [
     titre: 'Dépliant VISĀVI — Accordéon 6 volets',
     categorie: 'Édition & impression',
     annee: '2025',
-    image: 'images/projets/reel-visavi-table.jpg',
+    image: 'images/projets/reel-visavi-duo.jpg',
     galerie: ['images/projets/depliant-visavi.jpg', 'images/projets/depliant-visavi-decoupe.jpg', 'images/projets/depliant-visavi-vernis.jpg'],
     contexte: 'Jury Techniques d’impression (PG2, ESSTED) : dépliant accordéon pour un centre de bien-être et de médecine préventive.',
     objectif: 'Format fini fermé 99 × 210 mm, ouvert 596 × 210 mm, recto verso quadrichromie sur couché brillant 200 g, avec forme de découpe et vernis sélectif recto et verso.',
