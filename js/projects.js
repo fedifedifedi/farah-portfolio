@@ -16,23 +16,13 @@
 
 const tous = [
   {
-    titre: 'REAKTOR — Concept « Dualité »',
-    categorie: 'Campagne publicitaire',
-    annee: '',
-    image: 'images/projets/reel-reaktor-billboard.jpg',
-    galerie: ['images/projets/reaktor-moodboard.jpg', 'images/projets/reaktor-carte-mentale.jpg', 'images/projets/reaktor-packshot.jpg'],
-    contexte: 'Concept de campagne pour la boisson énergisante REAKTOR, déclinée en deux produits : Dark Power et Focus Power.',
-    objectif: 'Traduire l’idée de dualité « Force × Énergie » : deux facettes d’une même personnalité, mises en scène par le contraste rouge / bleu, de la carte mentale au moodboard et au packshot.',
-    outils: ['Photoshop', 'Direction artistique'],
-  },
-  {
-    titre: 'REAKTOR — Shooting photo',
+    titre: 'REAKTOR — Dualité',
     categorie: 'Photographie',
     annee: '',
     image: 'images/projets/reaktor-photo.jpg',
     galerie: [],
-    contexte: 'Shooting photo pour la campagne de la boisson énergisante REAKTOR (Dark Power et Focus Power).',
-    objectif: 'Incarner la dualité « Force × Énergie » : lumière rouge et bleue, regard affirmé et bouteille Dark Power mise en avant par le modèle.',
+    contexte: 'Shooting photo pour REAKTOR, une boisson énergisante déclinée en deux produits : Dark Power et Focus Power.',
+    objectif: 'Incarner le concept de la dualité « Force × Énergie » : deux facettes d’une même personnalité, traduites par le contraste de la lumière rouge et bleue, un regard affirmé et la bouteille Dark Power mise en avant.',
     outils: ['Photographie', 'Direction artistique', 'Photoshop'],
   },
   {
