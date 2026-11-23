@@ -109,7 +109,7 @@ const tous = [
     titre: 'Tunisia Animation Cinema Days',
     categorie: 'Affiche événementielle',
     annee: '2027',
-    image: 'images/projets/reel-cinema.jpg',
+    image: 'images/projets/reel-theatre.jpg',
     galerie: ['images/projets/tunisia-animation-cinema-days.jpg', 'images/projets/tunisia-animation-logo.jpg', 'images/projets/tunisia-animation-recherche.jpg'],
     contexte: 'Affiche d’un festival de cinéma d’animation organisé à l’ESSTED, du 24 au 27 juin 2027.',
     objectif: 'Annoncer l’événement avec une image claire : pellicule, salle de cinéma et typographie bilingue.',
