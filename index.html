@@ -30,7 +30,10 @@
 <body>
   <a class="skip-link" href="#classic" data-go-classic>Aller directement au contenu (version classique)</a>
 
-  <button id="mode-toggle" class="mode-toggle" type="button">Version classique</button>
+  <div class="top-controls">
+    <button id="lang-toggle" class="mode-toggle lang-toggle" type="button">EN</button>
+    <button id="mode-toggle" class="mode-toggle" type="button">Version classique</button>
+  </div>
 
   <!-- Accueil avec avatar interactif (avant le monde 3D, et en haut de la version classique) -->
   <section id="intro" class="intro" aria-labelledby="intro-title">
@@ -41,6 +44,7 @@
       <div class="intro__cta">
         <button class="btn btn--arrow" type="button" id="intro-enter">Entrer dans mon univers</button>
         <a class="btn btn--ghost btn--download" id="intro-cv" href="images/cv-farah.pdf" download>Télécharger le CV</a>
+        <a class="btn btn--ghost btn--download" id="intro-portfolio" href="images/portfolio-farah.pdf" download>Portfolio PDF</a>
       </div>
       <p class="intro__status" id="intro-status" aria-live="polite"></p>
     </div>

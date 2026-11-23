@@ -140,6 +140,12 @@ p { text-wrap: pretty; }
   transition: background var(--dur) var(--ease-out), color var(--dur) var(--ease-out), transform var(--dur) var(--ease-out);
 }
 .mode-toggle::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--coral); }
+/* Boutons en haut à droite : langue (FR / EN) + version */
+.top-controls { position: fixed; top: 16px; right: 16px; z-index: 75; display: flex; gap: 8px; }
+.top-controls .mode-toggle { position: static; }
+.lang-toggle::before { display: none; }
+.lang-toggle { min-width: 46px; justify-content: center; letter-spacing: .08em; }
+@media (max-width: 640px) { .top-controls { top: 10px; right: 10px; } }
 .mode-toggle:hover { background: var(--ink); color: var(--cream); transform: translateY(-1px); }
 
 /* ---------- Accueil avec avatar ---------- */
@@ -680,6 +686,7 @@ body.detail-open .overlays, body.detail-open .stages { opacity: 0; pointer-event
 .c-cv { background: var(--ink); color: var(--cream); border-top: 0; }
 .c-cv h2::before { color: var(--rose); }
 .c-cv h2 em { color: var(--pink); }
+.c-cv .c-cv__portfolio { --btn-fg: var(--cream); --btn-bd: rgba(253, 240, 247, .45); }
 .c-cv p { color: rgba(253, 240, 247, .72); max-width: 38ch; }
 .c-cv .c-wrap { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: var(--space-7); }
 

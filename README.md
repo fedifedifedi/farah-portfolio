@@ -32,3 +32,13 @@ Ouvrir `index.html` directement ne marche pas (modules JS). Lancer un serveur da
     python -m http.server 8000
 
 (ou `npx serve .`), puis ouvrir http://localhost:8000. `?p=0.6` dans l'adresse démarre la 3D à 60 % du parcours ; `#classique` ouvre la version classique.
+
+## Version anglaise
+Le bouton **FR / EN** en haut à droite change la langue (adresse : `?lang=en`). Les traductions sont dans `js/i18n.js` : interface, textes de Farah et projets (clé = titre français).
+
+## Portfolio PDF
+Les fichiers `images/portfolio-farah.pdf` (FR) et `images/portfolio-farah-en.pdf` (EN) se régénèrent avec :
+
+    node scripts/portfolio-pdf.mjs
+
+À relancer après chaque modification des projets ou des textes (mise en page : `scripts/print.html`).

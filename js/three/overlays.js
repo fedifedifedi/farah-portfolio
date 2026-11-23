@@ -1,5 +1,6 @@
 // Textes HTML superposés à la 3D (plus lisibles et accessibles que du texte 3D)
 // + menu des étapes à droite de l'écran.
+import { t } from '../i18n.js';
 import { content } from '../content.js';
 import { projects } from '../projects.js';
 import { socialLinks, timeline } from '../classic.js';
@@ -10,39 +11,40 @@ const HTML = {
   accueil: () => `
     <div class="overlay overlay--hero" data-stage="accueil">
       <p>${esc(content.accroche)}</p>
-      <span class="scroll-cue">Faites défiler pour commencer le voyage</span>
+      <span class="scroll-cue">${t('Faites défiler pour commencer le voyage')}</span>
     </div>`,
   apropos: () => `
     <section class="overlay" data-stage="apropos" aria-labelledby="ov-apropos">
-      <span class="eyebrow">À propos</span>
-      <h2 id="ov-apropos">Parcours</h2>
+      <span class="eyebrow">${t('À propos')}</span>
+      <h2 id="ov-apropos">${t('Parcours')}</h2>
       <p>${esc(content.apropos.intro)}</p>
       ${timeline()}
     </section>`,
   competences: () => `
     <section class="overlay overlay--right" data-stage="competences" aria-labelledby="ov-comp">
-      <span class="eyebrow">Compétences</span>
-      <h2 id="ov-comp">Ma boîte à outils</h2>
+      <span class="eyebrow">${t('Compétences')}</span>
+      <h2 id="ov-comp">${t('Ma boîte à outils')}</h2>
       <p>${esc(content.apropos.approche)}</p>
       <ul class="tags">${content.logiciels.map((l) => `<li>${esc(l)}</li>`).join('')}</ul>
     </section>`,
   ciel: () => `
     <div class="overlay overlay--caption" data-stage="ciel">
-      <p>Cap sur les nuages, là où flottent mes projets…</p>
+      <p>${t('Cap sur les nuages, là où flottent mes projets…')}</p>
     </div>`,
   projets: () => `
     <section class="overlay overlay--bar" data-stage="projets" aria-labelledby="ov-proj">
-      <h2 id="ov-proj" class="eyebrow">Projets · cliquez sur un cadre ou choisissez :</h2>
+      <h2 id="ov-proj" class="eyebrow">${t('Projets · cliquez sur un cadre ou choisissez :')}</h2>
       <ul class="project-chips">${projects.map((p, i) => `<li><button type="button" data-project="${i}">${esc(p.titre)}</button></li>`).join('')}</ul>
     </section>`,
   contact: () => `
     <section class="overlay overlay--contact" data-stage="contact" aria-labelledby="ov-contact">
       <span class="eyebrow">Contact</span>
-      <h2 id="ov-contact">Travaillons ensemble</h2>
+      <h2 id="ov-contact">${t('Travaillons ensemble')}</h2>
       <p>${esc(content.contact.message)}</p>
       <div class="contact-links">
         <a class="btn" href="mailto:${esc(content.contact.email)}">${esc(content.contact.email)}</a>
-        <a class="btn btn--ghost btn--download" href="${esc(content.cv)}" download>Télécharger le CV</a>
+        <a class="btn btn--ghost btn--download" href="${esc(content.cv)}" download>${t('Télécharger le CV')}</a>
+        <a class="btn btn--ghost btn--download" href="${esc(content.portfolio)}" download>${t('Portfolio PDF')}</a>
         ${socialLinks()}
       </div>
     </section>`,
@@ -57,7 +59,7 @@ export function createOverlays(stages, { jumpTo }) {
   const nav = document.getElementById('stages');
   root.innerHTML = stages.map((s) => HTML[s.id]()).join('');
   nav.innerHTML = stages
-    .map((s) => `<button type="button" data-jump="${s.id}" aria-label="Aller à : ${esc(s.label)}"><span>${esc(s.label)}</span></button>`)
+    .map((s) => `<button type="button" data-jump="${s.id}" aria-label="${t('Aller à : ')}${esc(s.label)}"><span>${esc(s.label)}</span></button>`)
     .join('');
 
   nav.querySelectorAll('[data-jump]').forEach((b) =>

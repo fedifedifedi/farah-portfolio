@@ -1,5 +1,6 @@
 // Panneaux 3D (titres dessinés sur des textures canvas), mur des compétences et cadres des projets.
 // Les textes viennent de js/content.js et les projets de js/projects.js.
+import { t } from '../i18n.js';
 import * as THREE from 'three';
 import { content } from '../content.js';
 import { projects } from '../projects.js';
@@ -114,9 +115,9 @@ export function createPanels(path, world, { manager } = {}) {
       ctx.fillStyle = INK;
       ctx.fill();
       const pad = w * 0.08;
-      text(ctx, 'À PROPOS', pad, h * 0.12, { font: `700 ${h * 0.045}px ${SANS}`, color: PINK, align: 'left', spacing: 8 });
+      text(ctx, t('À PROPOS'), pad, h * 0.12, { font: `700 ${h * 0.045}px ${SANS}`, color: PINK, align: 'left', spacing: 8 });
       text(ctx, 'Design Image', pad, h * 0.25, { font: `900 ${h * 0.1}px ${DISPLAY}`, color: LIGHT, align: 'left' });
-      text(ctx, 'spécialité Publicité graphique', pad, h * 0.33, { font: `italic 400 ${h * 0.058}px ${DISPLAY}`, color: LIGHT, align: 'left' });
+      text(ctx, t('spécialité Publicité graphique'), pad, h * 0.33, { font: `italic 400 ${h * 0.058}px ${DISPLAY}`, color: LIGHT, align: 'left' });
       // Les lignes du parcours se répartissent dans l'espace disponible, quel que soit leur nombre
       const list = content.apropos.parcours;
       const top = 0.44, bottom = 0.93;
@@ -163,7 +164,7 @@ export function createPanels(path, world, { manager } = {}) {
 
     // Les mots : un titre puis les compétences et logiciels, en alternant les styles
     const words = [
-      { str: 'Compétences', font: (h) => `900 ${h * 0.78}px ${DISPLAY}`, color: INK, size: 1.5 },
+      { str: t('Compétences'), font: (h) => `900 ${h * 0.78}px ${DISPLAY}`, color: INK, size: 1.5 },
       ...[...content.logiciels, ...content.competences].map((str, i) => ({
         str,
         font: (h) => (i % 2 ? `italic 400 ${h * 0.72}px ${DISPLAY}` : `700 ${h * 0.62}px ${SANS}`),
@@ -237,7 +238,7 @@ export function createPanels(path, world, { manager } = {}) {
         roundRect(ctx, 0, 0, w, h, 18);
         ctx.fillStyle = '#eddbe5'; // un peu moins clair que la crème : pas d'effet de lueur
         ctx.fill();
-        text(ctx, 'CERTIFICAT · ' + cert.date.toUpperCase(), w / 2, h * 0.36, { font: `700 ${h * 0.17}px ${SANS}`, color: CORAL, spacing: 3, maxWidth: w * 0.9 });
+        text(ctx, t('CERTIFICAT · ') + cert.date.toUpperCase(), w / 2, h * 0.36, { font: `700 ${h * 0.17}px ${SANS}`, color: CORAL, spacing: 3, maxWidth: w * 0.9 });
         text(ctx, cert.titre, w / 2, h * 0.76, { font: `700 ${h * 0.25}px ${DISPLAY}`, color: INK, maxWidth: w * 0.92 });
       });
       board.add(label);
@@ -275,8 +276,8 @@ export function createPanels(path, world, { manager } = {}) {
       roundRect(ctx, 0, 0, w, h, 50);
       ctx.fillStyle = 'rgba(43, 27, 61, 0.82)';
       ctx.fill();
-      text(ctx, 'Projets', w / 2, h * 0.58, { font: `900 ${h * 0.42}px ${DISPLAY}`, color: CREAM });
-      text(ctx, 'CLIQUEZ SUR UN CADRE POUR L’OUVRIR', w / 2, h * 0.82, { font: `700 ${h * 0.075}px ${SANS}`, color: PINK, spacing: 6 });
+      text(ctx, t('Projets'), w / 2, h * 0.58, { font: `900 ${h * 0.42}px ${DISPLAY}`, color: CREAM });
+      text(ctx, t('CLIQUEZ SUR UN CADRE POUR L’OUVRIR'), w / 2, h * 0.82, { font: `700 ${h * 0.075}px ${SANS}`, color: PINK, spacing: 6 });
     });
     const s = sProj0 - 12; // un peu avant la première affiche : un espace, sans trop d'écart
     path.pointAt(s, title.position);
@@ -407,10 +408,10 @@ export function createPanels(path, world, { manager } = {}) {
       roundRect(ctx, 0, 0, w, h, 50);
       ctx.fillStyle = INK;
       ctx.fill();
-      text(ctx, 'MERCI POUR LA VISITE', w / 2, h * 0.18, { font: `700 ${h * 0.055}px ${SANS}`, color: PINK, spacing: 10 });
+      text(ctx, t('MERCI POUR LA VISITE'), w / 2, h * 0.18, { font: `700 ${h * 0.055}px ${SANS}`, color: PINK, spacing: 10 });
       text(ctx, 'Contact', w / 2, h * 0.45, { font: `900 ${h * 0.25}px ${DISPLAY}`, color: CREAM });
       text(ctx, content.contact.email, w / 2, h * 0.65, { font: `italic 400 ${h * 0.085}px ${DISPLAY}`, color: PINK, maxWidth: w * 0.9 });
-      text(ctx, 'Stage PFE · design graphique & publicité', w / 2, h * 0.82, { font: `500 ${h * 0.055}px ${SANS}`, color: CREAM, maxWidth: w * 0.9 });
+      text(ctx, t('Stage PFE · design graphique & publicité'), w / 2, h * 0.82, { font: `500 ${h * 0.055}px ${SANS}`, color: CREAM, maxWidth: w * 0.9 });
     });
     const end = path.length;
     path.pointAt(end, contact.position).addScaledVector(path.tangentAt(end), 5);

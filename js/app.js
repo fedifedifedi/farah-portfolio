@@ -4,6 +4,7 @@ import { content } from './content.js';
 import { renderClassic } from './classic.js';
 import { initAvatar } from './avatar.js';
 import { initFx } from './fx.js';
+import { lang, isEn, t, setLang } from './i18n.js';
 
 const body = document.body;
 const $ = (id) => document.getElementById(id);
@@ -24,11 +25,35 @@ let webgl = (() => {
   }
 })();
 
+// ---------- Langue : textes fixes de la page traduits, bouton FR / EN ----------
+document.documentElement.lang = lang;
+if (isEn) {
+  document.title = 'Farah Ben Ammar — Graphic Designer, Advertising';
+  const tr = (sel, attr) => document.querySelectorAll(sel).forEach((el) => {
+    if (attr) el.setAttribute(attr, t(el.getAttribute(attr)));
+    else el.textContent = t(el.textContent.trim());
+  });
+  tr('.skip-link');
+  tr('.loader__sub');
+  tr('.modal__text h3');
+  tr('[data-prev]'); tr('[data-next]');
+  tr('.modal__close', 'aria-label');
+  tr('#stages', 'aria-label');
+  $('intro-title').firstChild.textContent = t('Salut, je suis') + ' ';
+}
+const langToggle = $('lang-toggle');
+langToggle.textContent = isEn ? 'FR' : 'EN';
+langToggle.setAttribute('aria-label', isEn ? 'Voir le site en français' : 'View the site in English');
+langToggle.addEventListener('click', () => setLang(isEn ? 'fr' : 'en'));
+
 // ---------- Accueil ----------
 $('intro-name').textContent = content.nom.split(' ')[0];
 $('intro-sub').textContent = content.titre;
 $('intro-tagline').textContent = content.accroche;
 $('intro-cv').href = content.cv;
+$('intro-cv').textContent = t('Télécharger le CV');
+$('intro-portfolio').href = content.portfolio;
+$('intro-portfolio').textContent = t('Portfolio PDF');
 const avatar = initAvatar($('avatar'));
 initFx();
 
@@ -42,7 +67,7 @@ function setProgress(v) {
   const pct = Math.round(Math.min(1, Math.max(0, v)) * 100);
   $('loader-fill').style.width = pct + '%';
   $('loader-pct').textContent = pct + ' %';
-  introStatus.textContent = pct < 100 ? `Préparation du voyage 3D… ${pct} %` : 'Le voyage est prêt.';
+  introStatus.textContent = pct < 100 ? `${t('Préparation du voyage 3D…')} ${pct} %` : t('Le voyage est prêt.');
 }
 
 function load3D() {
@@ -100,9 +125,9 @@ async function setMode(next, { skipIntro = false } = {}) {
   body.classList.toggle('is-classic', !is3d);
   experienceEl.hidden = !is3d;
   classicEl.hidden = is3d;
-  toggle.textContent = is3d ? 'Version classique' : 'Version 3D';
+  toggle.textContent = is3d ? t('Version classique') : t('Version 3D');
   toggle.hidden = !is3d && !webgl;
-  $('intro-enter').textContent = !is3d && !webgl ? 'Voir mes projets' : 'Entrer dans mon univers';
+  $('intro-enter').textContent = !is3d && !webgl ? t('Voir mes projets') : t('Entrer dans mon univers');
 
   if (!is3d) {
     renderClassic();

@@ -1,4 +1,5 @@
 // Fenêtre détaillée d'un projet (élément <dialog> natif : Échap, focus et accessibilité gérés par le navigateur)
+import { t } from './i18n.js';
 import { projects } from './projects.js';
 
 const dialog = document.getElementById('project-modal');
@@ -17,7 +18,7 @@ function render(index) {
       img.src = src;
       img.alt = i === 0 ? p.titre : `${p.titre} — visuel ${i + 1}`;
       img.decoding = 'async';
-      img.title = 'Cliquer pour ouvrir l’image seule';
+      img.title = t('Cliquer pour ouvrir l’image seule');
       img.addEventListener('click', () => window.open(src, '_blank', 'noopener')); // l'image s'ouvre seule
       return img;
     })

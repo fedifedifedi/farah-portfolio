@@ -3,6 +3,8 @@
 //  Ils sont utilisés à la fois par la version 3D et la version classique.
 // ============================================================
 
+import { isEn, CONTENT_EN, merge } from './i18n.js';
+
 export const content = {
   nom: 'Farah Ben Ammar',
   titre: 'Designer graphique — Publicité',
@@ -58,6 +60,8 @@ export const content = {
   },
 
   cv: 'images/cv-farah.pdf',
+  // Portfolio complet en PDF (régénéré avec scripts/portfolio-pdf.mjs)
+  portfolio: 'images/portfolio-farah.pdf',
 
   // Attestations et certificats (section « Certificats » de la version classique).
   // Les données personnelles (n° de carte d'identité, date de naissance) sont masquées sur les images.
@@ -69,3 +73,6 @@ export const content = {
     { titre: 'Hackathon : refonte du logo et de la charte graphique', emetteur: 'Flexo Print · Rose Blanche Group', date: 'Février 2026', image: 'images/certificats/hackathon-flexo-print.jpg' },
   ],
 };
+
+// Version anglaise : les textes de js/i18n.js remplacent les textes français
+if (isEn) merge(content, CONTENT_EN);

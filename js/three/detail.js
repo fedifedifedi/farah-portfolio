@@ -1,6 +1,7 @@
 // Vue détaillée d'un projet, directement dans la scène 3D :
 // grande image, autres photos cliquables, description, bouton fermer.
 // Elle apparaît devant la caméra et se ferme au clic sur « Fermer », sur le fond, avec Échap ou en faisant défiler.
+import { t } from '../i18n.js';
 import * as THREE from 'three';
 import { projects } from '../projects.js';
 
@@ -46,8 +47,8 @@ function textTexture(p) {
     g.fillStyle = '#4a3a5a'; g.font = `400 33px ${SANS}`;
     for (const l of wrap(g, body, W - pad * 2)) { g.fillText(l, pad, y); y += 46; }
   };
-  block('CONTEXTE', p.contexte);
-  block('OBJECTIF', p.objectif);
+  block(t('CONTEXTE'), p.contexte);
+  block(t('OBJECTIF'), p.objectif);
   y += 40;
   g.font = `600 28px ${SANS}`;
   let x = pad;
@@ -81,7 +82,7 @@ function linkTexture() {
   const g = c.getContext('2d');
   g.fillStyle = CORAL; g.beginPath(); g.roundRect(0, 0, 520, 120, 60); g.fill();
   g.fillStyle = '#fbeef5'; g.font = `600 44px ${SANS}`; g.textAlign = 'center'; g.textBaseline = 'middle';
-  g.fillText('Voir l’original  ↗', 260, 62);
+  g.fillText(t('Voir l’original  ↗'), 260, 62);
   const tex = new THREE.CanvasTexture(c);
   tex.colorSpace = THREE.SRGBColorSpace;
   return tex;
@@ -93,7 +94,7 @@ function closeTexture() {
   const g = c.getContext('2d');
   g.fillStyle = INK; g.beginPath(); g.roundRect(0, 0, 320, 120, 60); g.fill();
   g.fillStyle = '#f3e3ec'; g.font = `600 46px ${SANS}`; g.textAlign = 'center'; g.textBaseline = 'middle';
-  g.fillText('✕  Fermer', 160, 62);
+  g.fillText(t('✕  Fermer'), 160, 62);
   const tex = new THREE.CanvasTexture(c);
   tex.colorSpace = THREE.SRGBColorSpace;
   return tex;

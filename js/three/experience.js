@@ -1,4 +1,5 @@
 // Expérience 3D : rendu, caméra pilotée par le scroll, boucle d'animation
+import { t } from '../i18n.js';
 import * as THREE from 'three';
 import { createPath, STAGE_MARKERS } from './path.js';
 import { createSky, createClouds, MOODS } from './sky.js';
@@ -140,12 +141,12 @@ export async function createExperience({ onProgress = () => {}, startAt = null }
   const [sProj0, sProj1] = panels.sProjects;
   const overlays = createOverlays(
     [
-      { id: 'accueil', label: 'Accueil', from: -1, to: 5, jump: 0 },
-      { id: 'apropos', label: 'À propos', from: sAbout - 24, to: sAbout + 1, jump: sAbout - 15 },
-      { id: 'competences', label: 'Compétences', from: sSkills - 24, to: sSkills + 12, jump: sSkills - 22 },
-      { id: 'ciel', label: 'Vers le ciel', from: sSky - 26, to: sSky + 2, jump: sSky - 24 },
-      { id: 'projets', label: 'Projets', from: sProj0 - 18, to: sProj0 - 2, jump: sProj0 - 18 }, // visible seulement à l'arrivée dans les projets
-      { id: 'contact', label: 'Contact', from: travel - 10, to: Infinity, jump: travel },
+      { id: 'accueil', label: t('Accueil'), from: -1, to: 5, jump: 0 },
+      { id: 'apropos', label: t('À propos'), from: sAbout - 24, to: sAbout + 1, jump: sAbout - 15 },
+      { id: 'competences', label: t('Compétences'), from: sSkills - 24, to: sSkills + 12, jump: sSkills - 22 },
+      { id: 'ciel', label: t('Vers le ciel'), from: sSky - 26, to: sSky + 2, jump: sSky - 24 },
+      { id: 'projets', label: t('Projets'), from: sProj0 - 18, to: sProj0 - 2, jump: sProj0 - 18 }, // visible seulement à l'arrivée dans les projets
+      { id: 'contact', label: t('Contact'), from: travel - 10, to: Infinity, jump: travel },
     ],
     {
       jumpTo: (camS) => {
@@ -197,7 +198,7 @@ export async function createExperience({ onProgress = () => {}, startAt = null }
     const ct = content.certificats?.[obj?.userData.certIndex];
     if (ct) { // certificat : ouvert dans la vue détaillée 3D
       detail.open({ titre: ct.titre, categorie: ct.emetteur, annee: ct.date, image: ct.image, galerie: [], outils: [],
-        contexte: 'Attestation officielle délivrée à Farah Ben Ammar.', original: ct.original }, camera);
+        contexte: t('Attestation officielle délivrée à Farah Ben Ammar.'), original: ct.original }, camera);
       detailScroll = target;
     }
     else if (obj && obj.userData.projectIndex >= 0) showProject(obj.userData.projectIndex);

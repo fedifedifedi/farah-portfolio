@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Portfolio — Farah Ben Ammar</title>
+<!-- Mise en page du portfolio PDF (A4 paysage). Générée par scripts/portfolio-pdf.mjs ; ?lang=en pour l'anglais. -->
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700&family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,700;1,9..144,400&display=swap">
+<style>
+  @page { size: 297mm 210mm; margin: 0; }
+  :root { --ink: #2b1b3d; --soft: #5b4a6b; --rose: #f4b3da; --rose-soft: #f1c4dd; --coral: #c94f92; --cream: #fdf0f7; }
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: 'DM Sans', Arial, sans-serif; color: var(--ink); -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .page { width: 297mm; height: 210mm; position: relative; overflow: hidden; page-break-after: always; background: var(--cream); padding: 16mm 18mm; }
+  .page:last-child { page-break-after: auto; }
+  h1, h2, h3 { font-family: 'Fraunces', Georgia, serif; font-weight: 400; margin: 0; letter-spacing: -.01em; }
+  .eyebrow { font-size: 9pt; font-weight: 700; letter-spacing: .22em; text-transform: uppercase; color: var(--coral); margin: 0 0 4mm; }
+  .folio { position: absolute; bottom: 9mm; left: 18mm; right: 18mm; display: flex; justify-content: space-between; font-size: 8pt; color: var(--soft); letter-spacing: .08em; }
+  .tags { display: flex; flex-wrap: wrap; gap: 2mm; padding: 0; margin: 0; list-style: none; }
+  .tags li { font-size: 8.5pt; padding: 1.2mm 3mm; border-radius: 10mm; background: var(--rose-soft); color: #8a2e62; }
+
+  /* Couverture */
+  .cover { display: grid; grid-template-columns: 1.1fr .9fr; gap: 14mm; align-items: center; background: radial-gradient(70% 80% at 90% 10%, var(--rose), transparent 70%), var(--cream); }
+  .cover h1 { font-size: 58pt; line-height: .95; }
+  .cover h1 em { color: var(--coral); }
+  .cover .sub { font-size: 11pt; font-weight: 700; letter-spacing: .2em; text-transform: uppercase; color: #6c4a9e; margin: 8mm 0 4mm; }
+  .cover .tag { font-family: 'Fraunces', serif; font-style: italic; font-size: 15pt; color: var(--soft); max-width: 120mm; }
+  .cover .photo { height: 160mm; border-radius: 80mm 80mm 8mm 8mm; overflow: hidden; box-shadow: 0 0 0 3mm #fff, 0 10mm 30mm rgba(43,27,61,.2); }
+  .cover .photo img { width: 100%; height: 100%; object-fit: cover; }
+  .cover .contact { margin-top: 10mm; font-size: 10pt; color: var(--soft); line-height: 1.7; }
+
+  /* À propos */
+  .about { display: grid; grid-template-columns: 1.15fr 1fr; gap: 14mm; }
+  .about h2 { font-size: 32pt; margin-bottom: 5mm; }
+  .about .intro { font-family: 'Fraunces', serif; font-size: 13pt; line-height: 1.45; margin: 0 0 5mm; }
+  .about p { font-size: 9.5pt; line-height: 1.55; color: var(--soft); margin: 0 0 4mm; }
+  .about h3 { font-family: 'DM Sans', sans-serif; font-size: 8.5pt; font-weight: 700; letter-spacing: .2em; text-transform: uppercase; color: var(--soft); margin: 5mm 0 2.5mm; }
+  .timeline { list-style: none; padding: 0; margin: 0; }
+  .timeline li { display: grid; grid-template-columns: 26mm 1fr; gap: 3mm; padding: 2mm 0; border-top: .3mm solid rgba(43,27,61,.12); font-size: 9pt; }
+  .timeline li:first-child { border-top: 0; }
+  .timeline .when { color: var(--coral); font-weight: 700; }
+  .timeline small { display: block; color: var(--soft); }
+
+  /* Projet */
+  .project { display: grid; grid-template-columns: 1.55fr 1fr; gap: 10mm; padding-bottom: 20mm; }
+  .project .main { border-radius: 4mm; overflow: hidden; background: #f3e7ee; display: flex; align-items: center; justify-content: center; height: 165mm; }
+  .project .main img { width: 100%; height: 100%; object-fit: contain; }
+  .project .num { font-family: 'Fraunces', serif; font-size: 40pt; color: var(--coral); line-height: 1; margin-bottom: 3mm; }
+  .project h2 { font-size: 22pt; line-height: 1.1; margin-bottom: 5mm; }
+  .project h3 { font-family: 'DM Sans', sans-serif; font-size: 8pt; font-weight: 700; letter-spacing: .2em; text-transform: uppercase; color: var(--soft); margin: 4mm 0 1.5mm; }
+  .project p { font-size: 9.5pt; line-height: 1.5; margin: 0; }
+  .project .thumbs { display: flex; gap: 3mm; margin-top: 6mm; }
+  .project .thumbs img { height: 34mm; max-width: 50mm; object-fit: cover; border-radius: 2mm; box-shadow: 0 1mm 3mm rgba(43,27,61,.15); }
+
+  /* Certificats */
+  .certs h2 { font-size: 30pt; margin-bottom: 6mm; }
+  .certs .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6mm; }
+  .certs figure { margin: 0; }
+  .certs img { width: 100%; height: 50mm; object-fit: contain; background: #fff; border-radius: 2mm; padding: 2mm; box-shadow: 0 1mm 4mm rgba(43,27,61,.12); }
+  .certs figcaption { font-size: 8.5pt; margin-top: 3mm; line-height: 1.4; }
+  .certs figcaption b { display: block; font-family: 'Fraunces', serif; font-weight: 400; font-size: 11pt; }
+
+  /* Contact */
+  .end { display: grid; place-content: center; text-align: center; background: var(--ink); color: var(--cream); }
+  .end h2 { font-size: 48pt; margin-bottom: 6mm; }
+  .end p { font-size: 13pt; margin: 2mm 0; }
+  .end .mail { font-family: 'Fraunces', serif; font-size: 22pt; color: var(--rose); margin: 8mm 0; }
+</style>
+</head>
+<body>
+<div id="doc"></div>
+<script type="module">
+  import { content as c } from '../js/content.js';
+  import { projects } from '../js/projects.js';
+  import { isEn, t } from '../js/i18n.js';
+  const esc = (s = '') => String(s).replace(/[&<>"]/g, (x) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[x]));
+  const src = (p) => '../' + p;
+  const L = isEn
+    ? { about: 'About', approach: 'Creative approach', bg: 'Background', software: 'Software', skills: 'Skills', languages: 'Languages', context: 'Context', goal: 'Goal', tools: 'Tools', certs: 'Certificates', thanks: 'Let’s work together', portfolio: 'Portfolio' }
+    : { about: 'À propos', approach: 'Approche créative', bg: 'Parcours', software: 'Logiciels', skills: 'Compétences', languages: 'Langues', context: 'Contexte', goal: 'Objectif', tools: 'Outils', certs: 'Certificats', thanks: 'Travaillons ensemble', portfolio: 'Portfolio' };
+  const total = projects.length + 4;
+  const folio = (n) => `<div class="folio"><span>${esc(c.nom)} — ${L.portfolio}</span><span>${String(n).padStart(2, '0')} / ${String(total).padStart(2, '0')}</span></div>`;
+  const [first, ...rest] = c.nom.split(' ');
+  // visuel final = première image qui n'est pas une mise en situation
+  const finals = (p) => [p.image, ...(p.galerie || [])].filter((s) => !/\/(mockup|reel)-/.test(s));
+
+  let html = `
+  <section class="page cover">
+    <div>
+      <p class="eyebrow">${L.portfolio} ${new Date().getFullYear()}</p>
+      <h1>${esc(first)}<br><em>${esc(rest.join(' '))}</em></h1>
+      <p class="sub">${esc(c.titre)}</p>
+      <p class="tag">${esc(c.accroche)}</p>
+      <div class="contact">${esc(c.contact.email)}<br>${esc(c.contact.ville)}</div>
+    </div>
+    <div class="photo"><img src="${src('images/avatar.jpg')}" alt=""></div>
+    ${folio(1)}
+  </section>
+
+  <section class="page about">
+    <div>
+      <p class="eyebrow">${L.about}</p>
+      <h2>${esc(c.nom)}</h2>
+      <p class="intro">${esc(c.apropos.intro)}</p>
+      <h3>${L.approach}</h3>
+      <p>${esc(c.apropos.approche)}</p>
+      <h3>${L.software}</h3>
+      <ul class="tags">${c.logiciels.map((s) => `<li>${esc(s)}</li>`).join('')}</ul>
+      <h3>${L.skills}</h3>
+      <ul class="tags">${c.competences.map((s) => `<li>${esc(s)}</li>`).join('')}</ul>
+      <h3>${L.languages}</h3>
+      <ul class="tags">${c.langues.map((s) => `<li>${esc(s)}</li>`).join('')}</ul>
+    </div>
+    <div>
+      <h3 style="margin-top:0">${L.bg}</h3>
+      <ul class="timeline">${c.apropos.parcours.map((e) => `<li><span class="when">${esc(e.annee)}</span><span>${esc(e.titre)}${e.lieu ? `<small>${esc(e.lieu)}</small>` : ''}</span></li>`).join('')}</ul>
+    </div>
+    ${folio(2)}
+  </section>`;
+
+  projects.forEach((p, i) => {
+    const thumbs = finals(p).filter((s) => s !== p.image).slice(0, 3);
+    html += `
+  <section class="page project">
+    <div class="main"><img src="${src(p.image)}" alt=""></div>
+    <div>
+      <div class="num">${String(i + 1).padStart(2, '0')}</div>
+      <p class="eyebrow">${esc([p.categorie, p.annee].filter(Boolean).join(' · '))}</p>
+      <h2>${esc(p.titre)}</h2>
+      <h3>${L.context}</h3><p>${esc(p.contexte)}</p>
+      <h3>${L.goal}</h3><p>${esc(p.objectif)}</p>
+      <h3>${L.tools}</h3><ul class="tags">${(p.outils || []).map((o) => `<li>${esc(o)}</li>`).join('')}</ul>
+      ${thumbs.length ? `<div class="thumbs">${thumbs.map((s) => `<img src="${src(s)}" alt="">`).join('')}</div>` : ''}
+    </div>
+    ${folio(i + 3)}
+  </section>`;
+  });
+
+  html += `
+  <section class="page certs">
+    <p class="eyebrow">${L.certs}</p>
+    <h2>${L.certs}</h2>
+    <div class="grid">${(c.certificats || []).map((ct) => `<figure><img src="${src(ct.image)}" alt=""><figcaption><b>${esc(ct.titre)}</b>${esc(ct.emetteur)} · ${esc(ct.date)}</figcaption></figure>`).join('')}</div>
+    ${folio(total - 1)}
+  </section>
+
+  <section class="page end">
+    <h2>${L.thanks}</h2>
+    <p>${esc(c.contact.message)}</p>
+    <p class="mail">${esc(c.contact.email)}</p>
+    <p>${esc(c.contact.ville)}</p>
+    ${folio(total)}
+  </section>`;
+
+  document.getElementById('doc').innerHTML = html;
+  document.documentElement.lang = isEn ? 'en' : 'fr';
+  // Prêt quand les polices et toutes les images sont chargées
+  await document.fonts.ready;
+  await Promise.all([...document.images].map((im) => im.complete ? 0 : new Promise((r) => { im.onload = im.onerror = r; })));
+  window.ready = true;
+</script>
+</body>
+</html>

@@ -14,6 +14,8 @@
 //               Mettez false (ou supprimez la ligne) pour l'afficher.
 // ============================================================
 
+import { isEn, PROJECTS_EN } from './i18n.js';
+
 const tous = [
   {
     titre: 'REAKTOR — Dualité',
@@ -182,4 +184,4 @@ const tous = [
 ];
 
 // Projets affichés sur le site (version 3D et version classique)
-export const projects = tous.filter((p) => !p.masque);
+export const projects = tous.filter((p) => !p.masque).map((p) => (isEn && PROJECTS_EN[p.titre] ? { ...p, ...PROJECTS_EN[p.titre] } : p));
