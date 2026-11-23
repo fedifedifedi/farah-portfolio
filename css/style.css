@@ -631,6 +631,8 @@ body.detail-open .overlays, body.detail-open .stages { opacity: 0; pointer-event
 .showcase--docs .showcase__stage { height: clamp(340px, 52vh, 520px); }
 .showcase--docs .showcase__item { width: clamp(260px, 34vw, 480px); margin-left: calc(clamp(260px, 34vw, 480px) / -2); aspect-ratio: 4 / 3; top: 8%; }
 .showcase--docs .showcase__poster { background: #fff; padding: 10px; }
+.showcase--docs .showcase__item.is-active .showcase__poster::before { content: 'Agrandir le document  ⤢'; }
+.showcase--docs .showcase__item:not(.is-active):hover .showcase__poster { box-shadow: 0 0 0 3px var(--rose), var(--shadow-m); }
 .showcase--docs .showcase__poster img, .showcase--docs .showcase__reflect img { object-fit: contain; }
 .showcase--docs .showcase__thumbs button { width: 58px; aspect-ratio: 4 / 3; background: #fff; }
 .showcase--docs .showcase__thumbs button img { object-fit: contain; }

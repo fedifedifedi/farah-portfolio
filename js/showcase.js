@@ -7,7 +7,8 @@ const SPRING = 9;        // vitesse de l'animation vers le projet choisi
 const VISIBLE = 3;       // nombre d'affiches visibles de chaque côté
 
 // onItem : clic sur l'affiche du centre (par défaut : comme le bouton, ouvre la fiche)
-export function initShowcase(root, projects, openProject, onItem = openProject) {
+// direct : un clic sur n'importe quel élément l'ouvre aussitôt (sans le ramener d'abord au centre)
+export function initShowcase(root, projects, openProject, onItem = openProject, { direct = false } = {}) {
   if (!root || !projects.length) return;
   const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
   const items = [...root.querySelectorAll('.showcase__item')];
@@ -132,7 +133,7 @@ export function initShowcase(root, projects, openProject, onItem = openProject) 
       const item = e.target.closest?.('.showcase__item');
       if (item) {
         const i = Number(item.dataset.index);
-        if (i === Math.round(target) && Math.abs(i - pos) < 0.5) onItem(i);
+        if (direct || (i === Math.round(target) && Math.abs(i - pos) < 0.5)) { go(i); onItem(i); }
         else go(i);
       }
     }
