@@ -6,7 +6,8 @@
 const SPRING = 9;        // vitesse de l'animation vers le projet choisi
 const VISIBLE = 3;       // nombre d'affiches visibles de chaque côté
 
-export function initShowcase(root, projects, openProject) {
+// onItem : clic sur l'affiche du centre (par défaut : comme le bouton, ouvre la fiche)
+export function initShowcase(root, projects, openProject, onItem = openProject) {
   if (!root || !projects.length) return;
   const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
   const items = [...root.querySelectorAll('.showcase__item')];
@@ -131,7 +132,7 @@ export function initShowcase(root, projects, openProject) {
       const item = e.target.closest?.('.showcase__item');
       if (item) {
         const i = Number(item.dataset.index);
-        if (i === Math.round(target) && Math.abs(i - pos) < 0.5) openProject(i);
+        if (i === Math.round(target) && Math.abs(i - pos) < 0.5) onItem(i);
         else go(i);
       }
     }
@@ -141,7 +142,7 @@ export function initShowcase(root, projects, openProject) {
   stage.addEventListener('pointerleave', () => { tx = 0; ty = 0; kick(); });
   // Le clic est géré par le geste ci-dessus ; au clavier, Entrée ouvre le projet du centre
   items.forEach((item) => item.addEventListener('click', (e) => {
-    if (e.detail === 0) openProject(Number(item.dataset.index));
+    if (e.detail === 0) onItem(Number(item.dataset.index));
   }));
 
   // ---------- Molette horizontale (pavé tactile) ----------

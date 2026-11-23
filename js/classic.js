@@ -182,8 +182,10 @@ export function renderClassic() {
 
   <footer class="c-footer"><div class="c-wrap">© ${new Date().getFullYear()} ${esc(c.nom)} · ${esc(c.contact.ville)}</div></footer>`;
 
-  initShowcase(root.querySelector('#showcase'), projects, openProject);
-  initShowcase(root.querySelector('#cert-showcase'), certItems, (i) => openDocument(c.certificats[i]));
+  // Clic sur l'affiche ou le certificat : l'original s'ouvre dans un nouvel onglet ; les boutons ouvrent la fiche
+  const openOriginal = (url) => window.open(url, '_blank', 'noopener');
+  initShowcase(root.querySelector('#showcase'), projects, openProject, (i) => openOriginal(projects[i].image));
+  initShowcase(root.querySelector('#cert-showcase'), certItems, (i) => openDocument(c.certificats[i]), (i) => openOriginal(c.certificats[i].original || c.certificats[i].image));
   root.querySelectorAll('[data-project]').forEach((btn) =>
     btn.addEventListener('click', () => openProject(Number(btn.dataset.project)))
   );
