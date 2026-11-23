@@ -184,7 +184,9 @@ export function renderClassic() {
 
   // Clic sur l'affiche ou le certificat : l'original s'ouvre dans un nouvel onglet ; les boutons ouvrent la fiche
   const openOriginal = (url) => window.open(url, '_blank', 'noopener');
-  initShowcase(root.querySelector('#showcase'), projects, openProject, (i) => openOriginal(projects[i].image));
+  // Le visuel final = la 1re image qui n'est pas une mise en situation (mockup-… / reel-…)
+  const finalImage = (p) => [p.image, ...(p.galerie || [])].find((src) => !/\/(mockup|reel)-/.test(src)) || p.image;
+  initShowcase(root.querySelector('#showcase'), projects, openProject, (i) => openOriginal(finalImage(projects[i])));
   // Certificats : un clic ouvre le document en grand dans la page (avec « Voir l'original »)
   initShowcase(root.querySelector('#cert-showcase'), certItems, (i) => openDocument(c.certificats[i]), (i) => openDocument(c.certificats[i]), { direct: true });
   root.querySelectorAll('[data-project]').forEach((btn) =>
