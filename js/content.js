@@ -24,6 +24,7 @@ export const content = {
       { annee: '2026', titre: 'Stage en montage', lieu: 'Télévision Tunisienne · 15 juillet – 15 août', court: 'Stage · Télévision Tunisienne' },
       { annee: '2026', titre: 'Workshop « Quelle sobriété numérique en 2050 ? »', lieu: 'RAID 2026 · ESSTED, avril', court: 'Workshop · RAID 2026' },
       { annee: '2026', titre: 'Hackathon Flexo Print (Rose Blanche Group)', lieu: 'Refonte du logo et de la charte graphique · février', court: 'Hackathon · Flexo Print' },
+      { annee: '2026', titre: 'Hackathon XIA', lieu: 'Hackathon · travail en équipe', court: 'Hackathon · XIA' },
       { annee: '2024 – 2025', titre: 'Licence Design Image, 1re année', lieu: 'ISAM Mahdia', court: '1re année · ISAM Mahdia' },
       { annee: '2024', titre: 'Baccalauréat Lettres', lieu: '', court: 'Bac Lettres' },
     ],

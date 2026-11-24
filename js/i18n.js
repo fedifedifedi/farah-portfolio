@@ -114,6 +114,7 @@ export const CONTENT_EN = {
       { annee: '2026', titre: 'Video editing internship', lieu: 'Télévision Tunisienne · July 15 – August 15', court: 'Internship · Tunisian TV' },
       { annee: '2026', titre: 'Workshop “What digital sobriety in 2050?”', lieu: 'RAID 2026 · ESSTED, April', court: 'Workshop · RAID 2026' },
       { annee: '2026', titre: 'Flexo Print hackathon (Rose Blanche Group)', lieu: 'Logo and brand guidelines redesign · February', court: 'Hackathon · Flexo Print' },
+      { annee: '2026', titre: 'XIA hackathon', lieu: 'Hackathon · teamwork', court: 'Hackathon · XIA' },
       { annee: '2024 – 2025', titre: 'Bachelor of Image Design, 1st year', lieu: 'ISAM Mahdia', court: '1st year · ISAM Mahdia' },
       { annee: '2024', titre: 'Baccalaureate in Literature', lieu: '', court: 'Literature Baccalaureate' },
     ],
